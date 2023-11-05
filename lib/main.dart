@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) => MaterialApp(
-        initialRoute: AppRouts.login,
+        debugShowCheckedModeBanner: false,
         onGenerateRoute: (settings) => Rout.onGenerate(settings),
       ),
     );
