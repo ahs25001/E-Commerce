@@ -6,7 +6,7 @@ class ApiManager {
   Dio dio = Dio();
 
   Future<Response> getData(
-      {required String endPoint, required Map<String, dynamic> data}) {
+      {required String endPoint,  Map<String, dynamic>? data}) {
     return dio.get(AppConstants.baseUrl + endPoint, queryParameters: data);
   }
 

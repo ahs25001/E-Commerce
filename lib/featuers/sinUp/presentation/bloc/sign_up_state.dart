@@ -3,6 +3,7 @@ part of 'sign_up_bloc.dart';
 enum ScreenStatus {
   loading,
   successfully,
+  showPassword,
   failures,
   init
 }

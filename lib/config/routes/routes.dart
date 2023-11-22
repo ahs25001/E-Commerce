@@ -16,7 +16,7 @@ class Rout {
     switch (settings.name) {
       case AppRouts.login:
         return MaterialPageRoute(
-          builder: (context) => const LoginScreen(),
+          builder: (context) =>  LoginScreen(),
         );
       case AppRouts.sinUp:
         return MaterialPageRoute(
