@@ -1,6 +1,9 @@
+import 'package:e_commerce/core/utils/app_styles.dart';
+import 'package:e_commerce/featuers/home/presentation/bloc/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../core/utils/app_strings.dart';
 import '../../domain/entities/CategoryEntity.dart';
 import '../pages/components/CategoryItem.dart';
 
@@ -8,7 +11,7 @@ class HomeTab extends StatelessWidget {
   List<CategoryEntity>? categoryEntity;
   List<CategoryEntity>? brandsEntity;
 
-  HomeTab(this.categoryEntity,this.brandsEntity);
+  HomeTab(this.categoryEntity, this.brandsEntity);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,10 @@ class HomeTab extends StatelessWidget {
           SizedBox(
             height: 24.h,
           ),
-          Text("Categorise"),
+          Text(
+            AppStrings.categorise,
+            style: AppStyles.h2.copyWith(color: Colors.black),
+          ),
           SizedBox(
             height: 24.h,
           ),
@@ -33,14 +39,23 @@ class HomeTab extends StatelessWidget {
                   crossAxisCount: 2),
               itemCount: categoryEntity?.length ?? 0,
               itemBuilder: (context, index) {
-                return CategoryItem(categoryEntity![index]);
+                return InkWell(
+                    onTap: () => HomeBloc.get(context).add(
+                        SelectCategoryFromHomeEvent(
+                            selectedIndex: index,
+                           // selectedCategory: categoryEntity![index],
+                            tabIndex: 1)),
+                    child: CategoryItem(categoryEntity![index]));
               },
             ),
           ),
           SizedBox(
             height: 24.h,
           ),
-          Text("Brands"),
+          Text(
+            AppStrings.brands,
+            style: AppStyles.h2.copyWith(color: Colors.black),
+          ),
           SizedBox(
             height: 24.h,
           ),

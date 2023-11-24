@@ -4,9 +4,11 @@ import 'package:e_commerce/core/utils/app_strings.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/account_tab.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/catrgries_tab.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/favorets_tab.dart';
+import 'package:e_commerce/featuers/home/presentation/widgets/product_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../bloc/home_bloc.dart';
 import '../widgets/home_tab.dart';
@@ -27,39 +29,82 @@ class Home extends StatelessWidget {
               showDialog(
                 barrierDismissible: false,
                 context: context,
-                builder: (context) => const AlertDialog(
+                builder: (context) => AlertDialog(
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   title: Center(
-                      child: CircularProgressIndicator(
-                    color: Colors.red,
-                  )),
+                    child: LoadingAnimationWidget.fourRotatingDots(
+                      color: AppColors.blue,
+                      size: 90.sp,
+                    ),
+                  ),
                 ),
               );
             } else if (state.homeScreenStatus ==
                     HomeScreenStatus.getBrandsSuccessfully ||
                 state.homeScreenStatus ==
-                    HomeScreenStatus.getCategorySuccessfully) {
+                    HomeScreenStatus.getCategorySuccessfully ||
+                state.homeScreenStatus ==
+                    HomeScreenStatus.getSubCategorySuccessfully||state.homeScreenStatus==HomeScreenStatus.getProductsSuccessfully) {
               Navigator.pop(context);
+            } else if (state.homeScreenStatus ==
+                    HomeScreenStatus.getBrandsError ||
+                state.homeScreenStatus ==
+                    HomeScreenStatus.getSubCategoryError||state.homeScreenStatus==HomeScreenStatus.getProductsError ||
+                state.homeScreenStatus == HomeScreenStatus.getCategoryError) {
+
+              showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text(AppStrings.error),
+                    content: Text(state.failures?.massage ?? ""),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: const Text(AppStrings.cancel))
+                    ],
+                  );
+                },
+              );
             }
           },
           builder: (context, state) {
             List<Widget> tabs = [
               HomeTab(state.categoryEntity, state.brandsEntity),
-              const CategoriesTab(),
+              (state.products == null)
+                  ? CategoriesTab(
+                      categories: state.categoryEntity ?? [],
+                      selectedCategory:
+                          state.categoryEntity?[state.selectedCategoryIndex ?? 0],
+                      selectedIndex: state.selectedCategoryIndex ?? 0,
+                      subCategoryEntities: state.subCategoryEntity ?? [])
+                  : ProductTab(state.products ?? []),
               const FavoritesTab(),
               const AccountTab()
             ];
             return Scaffold(
+              resizeToAvoidBottomInset: false,
               extendBody: true,
               bottomNavigationBar: ClipRRect(
                 borderRadius: BorderRadius.circular(25.r),
                 child: BottomNavigationBar(
-                    currentIndex: state.index ?? 0,
+                    currentIndex: state.tabIndex ?? 0,
                     // selectedIconTheme: IconThemeData(color: ),
                     type: BottomNavigationBarType.fixed,
                     onTap: (value) {
-                      HomeBloc.get(context).add(ChangeTabEvent(value));
+                      if (value == 1) {
+                        HomeBloc.get(context)
+                          ..add(ChangeTabEvent(value))
+                          ..add(SelectCategoryFromListEvent(
+                              0, state.categoryEntity?[0]));
+                      } else {
+                        HomeBloc.get(context).add(ChangeTabEvent(value));
+                      }
                     },
                     selectedIconTheme: const IconThemeData(color: Colors.black),
                     unselectedIconTheme:
@@ -173,7 +218,7 @@ class Home extends StatelessWidget {
                     SizedBox(
                       height: 18.h,
                     ),
-                    tabs[state.index ?? 0]
+                    tabs[state.tabIndex ?? 0]
                   ],
                 ),
               ),

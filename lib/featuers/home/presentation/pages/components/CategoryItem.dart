@@ -1,3 +1,4 @@
+import 'package:e_commerce/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,17 +15,20 @@ class CategoryItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
-          child: CircleAvatar(
-            backgroundImage: NetworkImage(categoryEntity.image??"",),
+          child:
+              CircleAvatar(
+                foregroundColor: Colors.blueAccent,
+            backgroundImage: NetworkImage(
+              categoryEntity.image ?? "",
+            ),
             radius: 50.r,
-            // child:CachedNetworkImage(
-            //   imageUrl:
-            //   placeholder: (context, url) => CircularProgressIndicator(),
-            //   errorWidget: (context, url, error) => Icon(Icons.error),
-            // ),
           ),
         ),
-        Text(categoryEntity.name??"")
+        Text(
+          categoryEntity.name ?? "",
+          textAlign: TextAlign.center,
+          style: AppStyles.h3.copyWith(color: Colors.black),
+        )
       ],
     );
   }

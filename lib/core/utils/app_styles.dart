@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppStyles{
   static  TextStyle h1=GoogleFonts.poppins(
-    fontSize: 24.sp,
+    fontSize: 26.sp,
     color: Colors.white,
     fontWeight: FontWeight.w600,
   );
@@ -15,7 +15,7 @@ class AppStyles{
     fontWeight: FontWeight.w300,
   );
   static  TextStyle h2=GoogleFonts.poppins(
-    fontSize: 18.sp,
+    fontSize: 20.sp,
     color: Colors.white,
     fontWeight: FontWeight.w500,
   );

@@ -19,4 +19,6 @@ class AppStrings {
   static const String checkNetwork = "Check Network";
   static const String wrongMailOrPassword = "Wrong Mail Or Password";
   static const String searchHint = "what do you search for?";
+  static const String brands = "Brands";
+  static const String categorise = "Categorise";
 }
