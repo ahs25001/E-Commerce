@@ -1,4 +1,5 @@
 
+import 'package:e_commerce/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,6 +13,11 @@ class AppStyles{
   static  TextStyle h3=GoogleFonts.poppins(
     fontSize: 16.sp,
     color: Colors.white,
+    fontWeight: FontWeight.w300,
+  );
+  static  TextStyle titleProductStyle=GoogleFonts.poppins(
+    fontSize: 16.sp,
+    color: AppColors.blue,
     fontWeight: FontWeight.w300,
   );
   static  TextStyle h2=GoogleFonts.poppins(

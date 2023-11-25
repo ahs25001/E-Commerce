@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../../../../config/routes/routes.dart';
 import '../../../../core/utils/app_colors.dart';
@@ -24,11 +25,18 @@ class SingUp extends StatelessWidget {
         listener: (context, state) {
           if (state.screenStatus == ScreenStatus.loading) {
             showDialog(
-              context: context,
               barrierDismissible: false,
-              builder: (context) => const AlertDialog(
-                  backgroundColor: Colors.transparent,
-                  title: Center(child: CircularProgressIndicator())),
+              context: context,
+              builder: (context) => AlertDialog(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title: Center(
+                  child: LoadingAnimationWidget.fourRotatingDots(
+                    color: AppColors.blue,
+                    size: 90.sp,
+                  ),
+                ),
+              ),
             );
           } else if (state.screenStatus == ScreenStatus.successfully) {
             Navigator.pushNamedAndRemoveUntil(

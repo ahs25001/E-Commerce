@@ -21,4 +21,6 @@ class AppStrings {
   static const String searchHint = "what do you search for?";
   static const String brands = "Brands";
   static const String categorise = "Categorise";
+  static const String eGP = "EGP";
+  static const String review = "Review";
 }

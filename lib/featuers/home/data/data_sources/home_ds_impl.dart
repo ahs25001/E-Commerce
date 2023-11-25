@@ -58,7 +58,7 @@ class HomeDSImpl extends HomeDs {
     try {
       print(subCategoryId);
       Response response = await apiManager.getData(
-          endPoint: "${EndPoints.getProducts}[_id]=$subCategoryId");
+          endPoint: EndPoints.getProducts,data: {"subcategory[_id]":subCategoryId});
       print(response.data);
       ProductModel productModel = ProductModel.fromJson(response.data);
       return Left(productModel);

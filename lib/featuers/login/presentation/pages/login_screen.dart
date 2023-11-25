@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../bloc/login_bloc.dart';
 
@@ -23,10 +24,16 @@ class LoginScreen extends StatelessWidget {
             showDialog(
               barrierDismissible: false,
               context: context,
-              builder: (context) => const AlertDialog(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  title: Center(child: CircularProgressIndicator())),
+              builder: (context) => AlertDialog(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title: Center(
+                  child: LoadingAnimationWidget.fourRotatingDots(
+                    color: AppColors.blue,
+                    size: 90.sp,
+                  ),
+                ),
+              ),
             );
           } else if (state.screenStatus == ScreenStatus.successfully) {
             Navigator.pushNamedAndRemoveUntil(
