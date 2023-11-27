@@ -1,4 +1,5 @@
 import 'package:e_commerce/config/routes/routes.dart';
+import 'package:e_commerce/config/themeing/my_theme.dart';
 import 'package:e_commerce/core/cache/shared_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         onGenerateRoute: (settings) => Rout.onGenerate(settings),
         initialRoute: start,
+        theme: MyTheme.light,
       ),
     );
   }

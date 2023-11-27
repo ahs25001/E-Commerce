@@ -23,4 +23,9 @@ class AppStrings {
   static const String categorise = "Categorise";
   static const String eGP = "EGP";
   static const String review = "Review";
+  static const String productDetails = "Product Details";
+  static const String sold = "Sold";
+  static const String description = "Description";
+  static const String totalPrice = "Total Price";
+  static const String addToCart = "Add To Cart";
 }

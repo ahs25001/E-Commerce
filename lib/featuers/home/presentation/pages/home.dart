@@ -8,6 +8,7 @@ import 'package:e_commerce/featuers/home/presentation/widgets/product_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../bloc/home_bloc.dart';
@@ -18,6 +19,16 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Fluttertoast.showToast(
+    //     msg: "This is a Toast message",
+    //     toastLength: Toast.LENGTH_SHORT,
+    //     gravity: ToastGravity.BOTTOM,
+    //     backgroundColor: AppColors.blue,
+    //     timeInSecForIosWeb: 1,
+    //     textColor: Colors.white,
+    //     fontSize: 16.0
+    // );
+
     return BlocProvider(
       create: (context) => HomeBloc()
         ..add(GetCategoryEvent())
@@ -45,14 +56,16 @@ class Home extends StatelessWidget {
                 state.homeScreenStatus ==
                     HomeScreenStatus.getCategorySuccessfully ||
                 state.homeScreenStatus ==
-                    HomeScreenStatus.getSubCategorySuccessfully||state.homeScreenStatus==HomeScreenStatus.getProductsSuccessfully) {
+                    HomeScreenStatus.getSubCategorySuccessfully ||
+                state.homeScreenStatus ==
+                    HomeScreenStatus.getProductsSuccessfully) {
               Navigator.pop(context);
             } else if (state.homeScreenStatus ==
                     HomeScreenStatus.getBrandsError ||
                 state.homeScreenStatus ==
-                    HomeScreenStatus.getSubCategoryError||state.homeScreenStatus==HomeScreenStatus.getProductsError ||
+                    HomeScreenStatus.getSubCategoryError ||
+                state.homeScreenStatus == HomeScreenStatus.getProductsError ||
                 state.homeScreenStatus == HomeScreenStatus.getCategoryError) {
-
               showDialog(
                 barrierDismissible: false,
                 context: context,
@@ -75,12 +88,13 @@ class Home extends StatelessWidget {
           },
           builder: (context, state) {
             List<Widget> tabs = [
-              HomeTab(state.categoryEntity, state.brandsEntity),
+
+            HomeTab(state.categoryEntity, state.brandsEntity),
               (state.products == null)
                   ? CategoriesTab(
                       categories: state.categoryEntity ?? [],
-                      selectedCategory:
-                          state.categoryEntity?[state.selectedCategoryIndex ?? 0],
+                      selectedCategory: state
+                          .categoryEntity?[state.selectedCategoryIndex ?? 0],
                       selectedIndex: state.selectedCategoryIndex ?? 0,
                       subCategoryEntities: state.subCategoryEntity ?? [])
                   : ProductTab(state.products ?? []),
@@ -91,10 +105,9 @@ class Home extends StatelessWidget {
               resizeToAvoidBottomInset: false,
               extendBody: true,
               bottomNavigationBar: ClipRRect(
-                borderRadius: BorderRadius.circular(25.r),
+                borderRadius: BorderRadius.circular(30.r),
                 child: BottomNavigationBar(
                     currentIndex: state.tabIndex ?? 0,
-                    // selectedIconTheme: IconThemeData(color: ),
                     type: BottomNavigationBarType.fixed,
                     onTap: (value) {
                       if (value == 1) {
@@ -110,19 +123,36 @@ class Home extends StatelessWidget {
                     unselectedIconTheme:
                         const IconThemeData(color: Colors.white),
                     backgroundColor: AppColors.blue,
-                    items: const [
+                    items:  [
                       BottomNavigationBarItem(
-                          activeIcon: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.white,
-                                radius: 17,
-                              ),
-                              Icon(Icons.home_filled)
-                            ],
+                          activeIcon: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 20.r,
+                            child: const Icon(
+                              Icons.home_filled,
+                              color: Colors.black,
+                            ),
                           ),
-                          icon: Icon(Icons.home_filled),
+                          icon: const Icon(Icons.home_filled),
+                          label: ""),
+                      BottomNavigationBarItem(
+                          activeIcon: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 20.r,
+                            child: const Icon(Icons.category, color: Colors.black),
+                          ),
+                          icon: const Icon(Icons.category),
+                          label: ""),
+                      BottomNavigationBarItem(
+                          activeIcon: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 20.r,
+                            child: const Icon(
+                              Icons.favorite_border,
+                              color: Colors.black,
+                            ),
+                          ),
+                          icon: const Icon(Icons.favorite_border),
                           label: ""),
                       BottomNavigationBarItem(
                           activeIcon: Stack(
@@ -130,38 +160,12 @@ class Home extends StatelessWidget {
                             children: [
                               CircleAvatar(
                                 backgroundColor: Colors.white,
-                                radius: 17,
+                                radius: 20.r,
+                                child: const Icon(Icons.person,color: Colors.black,),
                               ),
-                              Icon(Icons.category)
                             ],
                           ),
-                          icon: Icon(Icons.category),
-                          label: ""),
-                      BottomNavigationBarItem(
-                          activeIcon: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.white,
-                                radius: 17,
-                              ),
-                              Icon(Icons.favorite_border)
-                            ],
-                          ),
-                          icon: Icon(Icons.favorite_border),
-                          label: ""),
-                      BottomNavigationBarItem(
-                          activeIcon: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.white,
-                                radius: 17,
-                              ),
-                              Icon(Icons.person)
-                            ],
-                          ),
-                          icon: Icon(Icons.person),
+                          icon: const Icon(Icons.person),
                           label: ""),
                     ]),
               ),
@@ -212,7 +216,7 @@ class Home extends StatelessWidget {
                         ),
                         IconButton(
                             onPressed: () {},
-                            icon: const Icon(Icons.shopping_cart))
+                            icon: const Icon(Icons.shopping_cart_outlined))
                       ],
                     ),
                     SizedBox(

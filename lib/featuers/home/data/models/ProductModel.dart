@@ -60,8 +60,9 @@ class Data extends ProductDataEntity {
     quantity = json['quantity'];
     price = json['price'];
     imageCover = json['imageCover'];
-    category =
-        json['category'] != null ? CategoryModel.fromJson(json['category']) : null;
+    category = json['category'] != null
+        ? CategoryModel.fromJson(json['category'])
+        : null;
     brand = json['brand'];
     ratingsAverage = json['ratingsAverage'];
     createdAt = json['createdAt'];
@@ -73,8 +74,6 @@ class Data extends ProductDataEntity {
   String? createdAt;
   String? updatedAt;
   CategoryModel? category;
-
-
 }
 
 class Subcategory {
