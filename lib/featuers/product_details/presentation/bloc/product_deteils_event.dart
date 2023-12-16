@@ -8,8 +8,23 @@ class ChangeCountEvent extends ProductDetailsEvent {
 
   ChangeCountEvent(this.countOfProduct);
 }
+
 class ShowMoreAndLessEvent extends ProductDetailsEvent {
-  bool  isAllDescription;
+  bool isAllDescription;
+
   ShowMoreAndLessEvent(this.isAllDescription);
 }
 
+class GetWishListIdsEvent extends ProductDetailsEvent {}
+
+class AddToWishListFromDetailsEvent extends ProductDetailsEvent {
+  String productId;
+
+  AddToWishListFromDetailsEvent(this.productId);
+}
+
+class DeleteFromWishListEvent extends ProductDetailsEvent {
+  String productId;
+
+  DeleteFromWishListEvent(this.productId);
+}

@@ -29,10 +29,10 @@ class Rout {
         return MaterialPageRoute(
           builder: (context) => Home(),
         );
-      case AppRouts.productDetails:
-        return MaterialPageRoute(
-            builder: (context) => ProductDetails(settings.arguments as ProductDataEntity),
-            settings: RouteSettings(arguments: ProductDataEntity()));
+      // case AppRouts.productDetails:
+      //   return MaterialPageRoute(
+      //       builder: (context) => ProductDetails(settings.arguments as ProductDataEntity),
+      //       settings: RouteSettings(arguments: ProductDataEntity()));
       default:
         return MaterialPageRoute(
           builder: (context) => Scaffold(

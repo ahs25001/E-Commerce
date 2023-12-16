@@ -43,7 +43,6 @@ class HomeTab extends StatelessWidget {
                     onTap: () => HomeBloc.get(context).add(
                         SelectCategoryFromHomeEvent(
                             selectedIndex: index,
-                           // selectedCategory: categoryEntity![index],
                             tabIndex: 1)),
                     child: CategoryItem(categoryEntity![index]));
               },

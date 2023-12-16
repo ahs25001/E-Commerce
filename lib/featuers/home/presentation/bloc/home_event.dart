@@ -24,6 +24,24 @@ class SelectCategoryFromHomeEvent extends HomeEvent {
 
 class GetCategoryEvent extends HomeEvent {}
 
+class GetWishListEvent extends HomeEvent {}
+
+class RefreshWishListEvent extends HomeEvent {}
+
+class AddToWishListEvent extends HomeEvent {
+  String productId;
+
+  AddToWishListEvent(this.productId);
+}
+
+class RemoveWishListEvent extends HomeEvent {
+  String productId;
+
+  RemoveWishListEvent(this.productId);
+}
+
+class BackToCategoriesTabEvent extends HomeEvent {}
+
 class GEtBrandsEvent extends HomeEvent {}
 
 class SelectSubCategoryEvent extends HomeEvent {

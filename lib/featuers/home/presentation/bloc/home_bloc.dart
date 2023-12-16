@@ -1,28 +1,30 @@
-import 'package:bloc/bloc.dart';
 import 'package:e_commerce/core/api/api_manager.dart';
-import 'package:e_commerce/featuers/home/data/data_sources/home_ds.dart';
-import 'package:e_commerce/featuers/home/data/data_sources/home_ds_impl.dart';
+import 'package:e_commerce/featuers/home/data/data_sources/local/home_local_ds.dart';
+import 'package:e_commerce/featuers/home/data/data_sources/local/home_local_ds_impl.dart';
+import 'package:e_commerce/featuers/home/data/data_sources/remot/home_ds.dart';
+import 'package:e_commerce/featuers/home/data/data_sources/remot/home_ds_impl.dart';
 import 'package:e_commerce/featuers/home/data/repositories/home_repo_impl.dart';
 import 'package:e_commerce/featuers/home/domain/entities/CategoryEntity.dart';
 import 'package:e_commerce/featuers/home/domain/repositories/home_repo.dart';
+import 'package:e_commerce/featuers/home/domain/use_cases/add_to_wish_list_use_case.dart';
 import 'package:e_commerce/featuers/home/domain/use_cases/get_brands_use_case.dart';
 import 'package:e_commerce/featuers/home/domain/use_cases/get_category_use_case.dart';
 import 'package:e_commerce/featuers/home/domain/use_cases/get_product.dart';
 import 'package:e_commerce/featuers/home/domain/use_cases/get_sub_category_usecase.dart';
+import 'package:e_commerce/featuers/home/domain/use_cases/get_wish_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
 import '../../../../core/error/failuers.dart';
 import '../../domain/entities/ProductEntity.dart';
+import '../../domain/use_cases/remove_from_wish_list_usecase.dart';
 
 part 'home_event.dart';
-
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   static HomeBloc get(context) => BlocProvider.of(context);
-
   HomeBloc() : super(HomeInitial()) {
     on<HomeEvent>((event, emit) async {
       if (event is ChangeTabEvent) {
@@ -111,6 +113,65 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             (r) => emit(state.copyWith(
                 homeScreenStatus: HomeScreenStatus.getProductsError,
                 failures: r)));
+      } else if (event is BackToCategoriesTabEvent) {
+        emit(state.copyWith(homeScreenStatus: HomeScreenStatus.init));
+      } else if (event is GetWishListEvent) {
+        emit(state.copyWith(
+            homeScreenStatus: HomeScreenStatus.loading,
+            products: state.products));
+        ApiManager apiManager = ApiManager();
+        HomeDs homeDs = HomeDSImpl(apiManager);
+        HomeRepo homeRepo = HomeRepoImpl(homeDs);
+        GetWishListUseCase getWishListUseCase = GetWishListUseCase(homeRepo);
+        HomeLocalDs homeLocalDs = HomeLocalDsImpl();
+        String? token = await homeLocalDs.getToken();
+        var response = await getWishListUseCase.call(token ?? "");
+        response.fold((l) {
+          var ids = l?.data?.map((e) => e.id).toList();
+          emit(state.copyWith(
+              homeScreenStatus: HomeScreenStatus.getWishListSuccessfully,
+              products: state.products,
+              wishList: l?.data,
+              wishListIds: ids));
+        },
+            (r) => emit(state.copyWith(
+                homeScreenStatus: HomeScreenStatus.getWishListError,
+                failures: r)));
+      } else if (event is AddToWishListEvent) {
+        emit(state.copyWith(
+          homeScreenStatus: HomeScreenStatus.loading,
+          products: state.products,
+        ));
+        ApiManager apiManager = ApiManager();
+        HomeDs homeDs = HomeDSImpl(apiManager);
+        HomeRepo homeRepo = HomeRepoImpl(homeDs);
+        AddToWishListUseCase(homeRepo);
+        var response = await homeRepo.addToWishList(event.productId);
+        response.fold(
+            (l) => emit(state.copyWith(
+                products: state.products,
+                homeScreenStatus: HomeScreenStatus.addToWishListSuccessfully,
+                massage: l?.message)),
+            (r) => emit(state.copyWith(
+                homeScreenStatus: HomeScreenStatus.addToWishListError)));
+      } else if (event is RemoveWishListEvent) {
+        emit(state.copyWith(
+          homeScreenStatus: HomeScreenStatus.loading,
+          products: state.products,
+        ));
+        ApiManager apiManager = ApiManager();
+        HomeDs homeDs = HomeDSImpl(apiManager);
+        HomeRepo homeRepo = HomeRepoImpl(homeDs);
+        RemoveFromWishListUseCase(homeRepo);
+        var response = await homeRepo.removeFromWishList(event.productId);
+        response.fold(
+            (l) => emit(state.copyWith(
+                products: state.products,
+                homeScreenStatus:
+                    HomeScreenStatus.removeFromWishListSuccessfully,
+                massage: l?.message)),
+            (r) => emit(state.copyWith(
+                homeScreenStatus: HomeScreenStatus.removeFromWishListError)));
       }
     });
   }

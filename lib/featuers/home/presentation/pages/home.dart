@@ -1,3 +1,4 @@
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:e_commerce/core/utils/app_colors.dart';
 import 'package:e_commerce/core/utils/app_images.dart';
 import 'package:e_commerce/core/utils/app_strings.dart';
@@ -32,7 +33,8 @@ class Home extends StatelessWidget {
     return BlocProvider(
       create: (context) => HomeBloc()
         ..add(GetCategoryEvent())
-        ..add(GEtBrandsEvent()),
+        ..add(GEtBrandsEvent())
+        ..add(GetWishListEvent()),
       child: SafeArea(
         child: BlocConsumer<HomeBloc, HomeState>(
           listener: (context, state) {
@@ -44,15 +46,17 @@ class Home extends StatelessWidget {
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   title: Center(
-                    child: LoadingAnimationWidget.fourRotatingDots(
-                      color: AppColors.blue,
-                      size: 90.sp,
+                        child: LoadingAnimationWidget.fourRotatingDots(
+                          color: AppColors.blue,
+                          size: 90.sp,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
               );
             } else if (state.homeScreenStatus ==
                     HomeScreenStatus.getBrandsSuccessfully ||
+                state.homeScreenStatus ==
+                    HomeScreenStatus.getWishListSuccessfully ||
                 state.homeScreenStatus ==
                     HomeScreenStatus.getCategorySuccessfully ||
                 state.homeScreenStatus ==
@@ -61,7 +65,25 @@ class Home extends StatelessWidget {
                     HomeScreenStatus.getProductsSuccessfully) {
               Navigator.pop(context);
             } else if (state.homeScreenStatus ==
+                    HomeScreenStatus.addToWishListSuccessfully ||
+                state.homeScreenStatus ==
+                    HomeScreenStatus.removeFromWishListSuccessfully) {
+              Navigator.pop(context);
+              HomeBloc.get(context).add(GetWishListEvent());
+              Fluttertoast.showToast(
+                  msg: state.massage ?? "Done",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: AppColors.blue,
+                  timeInSecForIosWeb: 3,
+                  textColor: Colors.white,
+                  fontSize: 13.0);
+            } else if (state.homeScreenStatus ==
                     HomeScreenStatus.getBrandsError ||
+                state.homeScreenStatus == HomeScreenStatus.getWishListError ||
+                state.homeScreenStatus ==
+                    HomeScreenStatus.removeFromWishListError ||
+                state.homeScreenStatus == HomeScreenStatus.addToWishListError ||
                 state.homeScreenStatus ==
                     HomeScreenStatus.getSubCategoryError ||
                 state.homeScreenStatus == HomeScreenStatus.getProductsError ||
@@ -76,8 +98,18 @@ class Home extends StatelessWidget {
                     actions: [
                       ElevatedButton(
                           onPressed: () {
-                            Navigator.pop(context);
-                            Navigator.pop(context);
+                            if (state.homeScreenStatus ==
+                                    HomeScreenStatus.getBrandsError ||
+                                state.homeScreenStatus ==
+                                    HomeScreenStatus.getCategoryError) {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            } else {
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                            }
                           },
                           child: const Text(AppStrings.cancel))
                     ],
@@ -88,8 +120,7 @@ class Home extends StatelessWidget {
           },
           builder: (context, state) {
             List<Widget> tabs = [
-
-            HomeTab(state.categoryEntity, state.brandsEntity),
+              HomeTab(state.categoryEntity, state.brandsEntity),
               (state.products == null)
                   ? CategoriesTab(
                       categories: state.categoryEntity ?? [],
@@ -98,76 +129,50 @@ class Home extends StatelessWidget {
                       selectedIndex: state.selectedCategoryIndex ?? 0,
                       subCategoryEntities: state.subCategoryEntity ?? [])
                   : ProductTab(state.products ?? []),
-              const FavoritesTab(),
+              FavoritesTab(state.wishList ?? []),
               const AccountTab()
             ];
             return Scaffold(
               resizeToAvoidBottomInset: false,
               extendBody: true,
-              bottomNavigationBar: ClipRRect(
-                borderRadius: BorderRadius.circular(30.r),
-                child: BottomNavigationBar(
-                    currentIndex: state.tabIndex ?? 0,
-                    type: BottomNavigationBarType.fixed,
-                    onTap: (value) {
-                      if (value == 1) {
-                        HomeBloc.get(context)
-                          ..add(ChangeTabEvent(value))
-                          ..add(SelectCategoryFromListEvent(
-                              0, state.categoryEntity?[0]));
-                      } else {
-                        HomeBloc.get(context).add(ChangeTabEvent(value));
-                      }
-                    },
-                    selectedIconTheme: const IconThemeData(color: Colors.black),
-                    unselectedIconTheme:
-                        const IconThemeData(color: Colors.white),
-                    backgroundColor: AppColors.blue,
-                    items:  [
-                      BottomNavigationBarItem(
-                          activeIcon: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 20.r,
-                            child: const Icon(
-                              Icons.home_filled,
-                              color: Colors.black,
-                            ),
-                          ),
-                          icon: const Icon(Icons.home_filled),
-                          label: ""),
-                      BottomNavigationBarItem(
-                          activeIcon: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 20.r,
-                            child: const Icon(Icons.category, color: Colors.black),
-                          ),
-                          icon: const Icon(Icons.category),
-                          label: ""),
-                      BottomNavigationBarItem(
-                          activeIcon: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 20.r,
-                            child: const Icon(
-                              Icons.favorite_border,
-                              color: Colors.black,
-                            ),
-                          ),
-                          icon: const Icon(Icons.favorite_border),
-                          label: ""),
-                      BottomNavigationBarItem(
-                          activeIcon: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              CircleAvatar(
-                                backgroundColor: Colors.white,
-                                radius: 20.r,
-                                child: const Icon(Icons.person,color: Colors.black,),
-                              ),
-                            ],
-                          ),
-                          icon: const Icon(Icons.person),
-                          label: ""),
-                    ]),
+              bottomNavigationBar: CurvedNavigationBar(
+                color: AppColors.blue,
+                backgroundColor: Colors.transparent,
+                index: state.tabIndex ?? 0,
+                items: const [
+                  Icon(
+                    Icons.home_filled,
+                    color: Colors.white,
+                  ),
+                  Icon(
+                    Icons.category,
+                    color: Colors.white,
+                  ),
+                  Icon(
+                    Icons.favorite_border,
+                    color: Colors.white,
+                  ),
+                  Icon(
+                    Icons.person,
+                    color: Colors.white,
+                  ),
+                ],
+                onTap: (value) {
+                  if (value == 1) {
+                    HomeBloc.get(context)
+                      ..add(ChangeTabEvent(value))
+                      ..add(SelectCategoryFromListEvent(
+                          0, state.categoryEntity?[0]));
+                  }
+                  else if (value == 2) {
+                    HomeBloc.get(context)
+                      ..add(ChangeTabEvent(value))
+                      ..add(GetWishListEvent());
+                  }
+                  else {
+                    HomeBloc.get(context).add(ChangeTabEvent(value));
+                  }
+                },
               ),
               body: Padding(
                 padding:

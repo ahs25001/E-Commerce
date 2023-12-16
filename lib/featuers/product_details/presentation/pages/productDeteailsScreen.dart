@@ -3,25 +3,92 @@ import 'package:e_commerce/core/utils/app_colors.dart';
 import 'package:e_commerce/core/utils/app_strings.dart';
 import 'package:e_commerce/core/utils/app_styles.dart';
 import 'package:e_commerce/featuers/home/domain/entities/ProductEntity.dart';
+import 'package:e_commerce/featuers/home/presentation/bloc/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../bloc/product_deteils_bloc.dart';
 import '../widgets/image_cover_item.dart';
 
 class ProductDetails extends StatelessWidget {
   ProductDataEntity productDataEntity;
+  bool fromWishTab;
 
-  ProductDetails(this.productDataEntity);
+  ProductDetails({required this.productDataEntity, required this.fromWishTab});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ProductDetailsBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ProductDetailsBloc()..add(GetWishListIdsEvent()),
+        ), BlocProvider(
+          create: (context) => HomeBloc(),
+        )
+      ],
       child: BlocConsumer<ProductDetailsBloc, ProductDetailsState>(
         listener: (context, state) {
-          // TODO: implement listener
+          if (state.productScreenStatus == ProductScreenStatus.loading) {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => AlertDialog(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title: Center(
+                  child: LoadingAnimationWidget.fourRotatingDots(
+                    color: AppColors.blue,
+                    size: 90.sp,
+                  ),
+                ),
+              ),
+            );
+          } else if (state.productScreenStatus ==
+                  ProductScreenStatus.removeFromWishListError ||
+              state.productScreenStatus ==
+                  ProductScreenStatus.addToWishListError ||
+              state.productScreenStatus ==
+                  ProductScreenStatus.getWishListIdsError) {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: const Text(AppStrings.error),
+                  content: Text(state.failures?.massage ?? ""),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                        child: const Text(AppStrings.cancel))
+                  ],
+                );
+              },
+            );
+          } else if (state.productScreenStatus ==
+                  ProductScreenStatus.removeFromWishListSuccessfully ||
+              state.productScreenStatus ==
+                  ProductScreenStatus.addToWishListSuccessfully) {
+            Fluttertoast.showToast(
+                msg: state.massage ?? "Done",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: AppColors.blue,
+                timeInSecForIosWeb: 3,
+                textColor: Colors.white,
+                fontSize: 13.0);
+            Navigator.pop(context);
+            ProductDetailsBloc.get(context).add(GetWishListIdsEvent());
+            HomeBloc.get(context).add(RefreshWishListEvent());
+          } else if (state.productScreenStatus ==
+              ProductScreenStatus.getWishListIdsSuccessfully) {
+            Navigator.pop(context);
+          }
         },
         builder: (context, state) {
           return Scaffold(
@@ -57,7 +124,12 @@ class ProductDetails extends StatelessWidget {
                   children: [
                     CarouselSlider(
                       items: (productDataEntity.images ?? [])
-                          .map((e) => CoverImageItem(e ?? ""))
+                          .map((e) => CoverImageItem(
+                              imageLink: (fromWishTab)
+                                  ? ("https://ecommerce.routemisr.com/Route-Academy-products/$e" ??
+                                      "")
+                                  : e ?? "",
+                              id: productDataEntity.id ?? ""))
                           .toList(),
                       options: CarouselOptions(
                         height: 300.h,

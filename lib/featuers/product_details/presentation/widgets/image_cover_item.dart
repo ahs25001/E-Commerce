@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_commerce/featuers/home/presentation/bloc/home_bloc.dart';
+import 'package:e_commerce/featuers/product_details/presentation/bloc/product_deteils_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -7,8 +9,10 @@ import '../../../../core/utils/app_colors.dart';
 
 class CoverImageItem extends StatelessWidget {
   String imageLink;
+  String id;
 
-  CoverImageItem(this.imageLink);
+  CoverImageItem(
+      {required this.imageLink,  required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -32,13 +36,27 @@ class CoverImageItem extends StatelessWidget {
             ),
           ),
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                if (!(ProductDetailsBloc.get(context).state.wishListIds?.contains(id)??false)) {
+                  ProductDetailsBloc.get(context)
+                      .add(AddToWishListFromDetailsEvent(id));
+                }
+                else{
+                  ProductDetailsBloc.get(context).add(DeleteFromWishListEvent(id));
+                  HomeBloc.get(context)..add(RemoveWishListEvent(id))..add(GetWishListEvent());
+                }
+              },
               icon: CircleAvatar(
                   backgroundColor: Colors.white,
-                  child: Icon(
-                    Icons.favorite_border,
-                    color: AppColors.blue,
-                  )))
+                  child: (!(ProductDetailsBloc.get(context).state.wishListIds?.contains(id)??false))
+                      ? Icon(
+                          Icons.favorite_border,
+                          color: AppColors.blue,
+                        )
+                      : Icon(
+                          Icons.favorite,
+                          color: AppColors.blue,
+                        )))
         ],
       ),
     );
