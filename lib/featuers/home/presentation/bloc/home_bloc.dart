@@ -1,4 +1,5 @@
 import 'package:e_commerce/core/api/api_manager.dart';
+import 'package:e_commerce/core/utils/app_constants.dart';
 import 'package:e_commerce/featuers/home/data/data_sources/local/home_local_ds.dart';
 import 'package:e_commerce/featuers/home/data/data_sources/local/home_local_ds_impl.dart';
 import 'package:e_commerce/featuers/home/data/data_sources/remot/home_ds.dart';
@@ -16,6 +17,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
+import '../../../../core/cache/shared_pref.dart';
 import '../../../../core/error/failuers.dart';
 import '../../domain/entities/ProductEntity.dart';
 import '../../domain/use_cases/remove_from_wish_list_usecase.dart';
@@ -29,7 +31,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeEvent>((event, emit) async {
       if (event is ChangeTabEvent) {
         emit(state.copyWith(
-            tabIndex: event.index, homeScreenStatus: HomeScreenStatus.init));
+            tabIndex: event.index, homeScreenStatus: HomeScreenStatus.init,wishListTab: event.index==3));
       } else if (event is GetCategoryEvent) {
         emit(state.copyWith(homeScreenStatus: HomeScreenStatus.loading));
         ApiManager apiManager = ApiManager();
@@ -124,7 +126,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         HomeRepo homeRepo = HomeRepoImpl(homeDs);
         GetWishListUseCase getWishListUseCase = GetWishListUseCase(homeRepo);
         HomeLocalDs homeLocalDs = HomeLocalDsImpl();
-        String? token = await homeLocalDs.getToken();
+        String? token = AppConstants.token;
         var response = await getWishListUseCase.call(token ?? "");
         response.fold((l) {
           var ids = l?.data?.map((e) => e.id).toList();

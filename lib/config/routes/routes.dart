@@ -1,4 +1,5 @@
 import 'package:e_commerce/featuers/home/domain/entities/ProductEntity.dart';
+import 'package:e_commerce/featuers/sinUp/domain/entities/UserEntity.dart';
 import 'package:e_commerce/featuers/sinUp/presentation/pages/singUp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

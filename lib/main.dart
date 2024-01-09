@@ -10,11 +10,15 @@ void main() async {
   await CachedData.init();
   String start;
   String? token= await CachedData.getData("token");
+  String? userName= await CachedData.getData("name");
+  String? email= await CachedData.getData("email");
   if (token == null) {
     start = "/";
   } else {
     print("token : $token");
     AppConstants.token=token;
+    AppConstants.email=email;
+    AppConstants.userName=userName;
     start = "home";
   }
   runApp(MyApp(start));

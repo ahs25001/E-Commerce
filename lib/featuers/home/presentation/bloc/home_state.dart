@@ -33,25 +33,34 @@ class HomeState {
   final int? selectedSubCategoryIndex;
   final List<String?>? wishListIds;
   final String? massage;
+  final String? email;
+  final String? name;
+  final bool? wishListTab;
 
   HomeState(
       {this.homeScreenStatus,
       this.products,
       this.wishListIds,
       this.massage,
+      this.name,
+      this.email,
       this.selectedSubCategoryIndex,
       this.tabIndex,
       this.wishList,
       this.subCategoryEntity,
       this.selectedCategoryIndex = 0,
       this.failures,
+      this.wishListTab,
       this.categoryEntity,
       this.brandsEntity});
 
   copyWith(
       {HomeScreenStatus? homeScreenStatus,
       int? tabIndex,
+      String? name,
+      String? email,
       String? massage,
+      bool? wishListTab,
       int? selectedSubCategoryIndex,
       List<String?>? wishListIds,
       List<ProductDataEntity>? products,
@@ -62,7 +71,10 @@ class HomeState {
       Failures? failures,
       List<CategoryEntity>? categoryEntity}) {
     return HomeState(
+        wishListTab: wishListTab ?? this.wishListTab,
         massage: massage ?? this.massage,
+        email: email ?? this.email,
+        name: name ?? this.name,
         wishListIds: wishListIds ?? this.wishListIds,
         wishList: wishList ?? this.wishList,
         selectedSubCategoryIndex:

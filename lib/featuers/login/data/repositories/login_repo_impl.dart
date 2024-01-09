@@ -20,6 +20,8 @@ class LoginRepoImpl extends LoginRepo {
     if (result.isLeft()) {
       result.fold((l){
         loginLocalDS.setToken(l.token ?? "");
+        loginLocalDS.setEmail(l.user?.email ?? "");
+        loginLocalDS.setName(l.user?.name ?? "");
       }, (r) => null);
     }
     else {

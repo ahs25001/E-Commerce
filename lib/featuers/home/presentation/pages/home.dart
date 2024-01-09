@@ -1,11 +1,14 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:e_commerce/core/cache/shared_pref.dart';
 import 'package:e_commerce/core/utils/app_colors.dart';
+import 'package:e_commerce/core/utils/app_constants.dart';
 import 'package:e_commerce/core/utils/app_images.dart';
 import 'package:e_commerce/core/utils/app_strings.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/account_tab.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/catrgries_tab.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/favorets_tab.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/product_tab.dart';
+import 'package:e_commerce/featuers/sinUp/domain/entities/UserEntity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,7 +19,6 @@ import '../bloc/home_bloc.dart';
 import '../widgets/home_tab.dart';
 
 class Home extends StatelessWidget {
-  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class Home extends StatelessWidget {
     //     textColor: Colors.white,
     //     fontSize: 16.0
     // );
-
+    // var arg = ModalRoute.of(context)!.settings.arguments as UserDataEntity;
     return BlocProvider(
       create: (context) => HomeBloc()
         ..add(GetCategoryEvent())
@@ -188,6 +190,7 @@ class Home extends StatelessWidget {
                     SizedBox(
                       height: 18.h,
                     ),
+                    (!(state.wishListTab??false))?
                     Row(
                       children: [
                         Expanded(
@@ -222,6 +225,11 @@ class Home extends StatelessWidget {
                         IconButton(
                             onPressed: () {},
                             icon: const Icon(Icons.shopping_cart_outlined))
+                      ],
+                    ):Column(
+                      children: [
+                        Text("Welcome , ${AppConstants.userName}"),
+                        Text("${AppConstants.email}"),
                       ],
                     ),
                     SizedBox(

@@ -40,6 +40,7 @@ class LoginScreen extends StatelessWidget {
               context,
               AppRouts.home,
               (route) => false,
+              // arguments: state.userEntity?.user
             );
           } else if (state.screenStatus == ScreenStatus.failures) {
             showDialog(
