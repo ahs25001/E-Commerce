@@ -14,10 +14,9 @@ import 'package:e_commerce/featuers/home/domain/use_cases/get_product.dart';
 import 'package:e_commerce/featuers/home/domain/use_cases/get_sub_category_usecase.dart';
 import 'package:e_commerce/featuers/home/domain/use_cases/get_wish_list.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 
-import '../../../../core/cache/shared_pref.dart';
 import '../../../../core/error/failuers.dart';
 import '../../domain/entities/ProductEntity.dart';
 import '../../domain/use_cases/remove_from_wish_list_usecase.dart';
@@ -27,11 +26,16 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   static HomeBloc get(context) => BlocProvider.of(context);
+  var formKey = GlobalKey<FormState>();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   HomeBloc() : super(HomeInitial()) {
     on<HomeEvent>((event, emit) async {
       if (event is ChangeTabEvent) {
         emit(state.copyWith(
-            tabIndex: event.index, homeScreenStatus: HomeScreenStatus.init,wishListTab: event.index==3));
+            tabIndex: event.index,
+            homeScreenStatus: HomeScreenStatus.init,
+            wishListTab: event.index == 3));
       } else if (event is GetCategoryEvent) {
         emit(state.copyWith(homeScreenStatus: HomeScreenStatus.loading));
         ApiManager apiManager = ApiManager();

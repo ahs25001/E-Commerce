@@ -1,14 +1,13 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:e_commerce/core/cache/shared_pref.dart';
 import 'package:e_commerce/core/utils/app_colors.dart';
 import 'package:e_commerce/core/utils/app_constants.dart';
 import 'package:e_commerce/core/utils/app_images.dart';
 import 'package:e_commerce/core/utils/app_strings.dart';
+import 'package:e_commerce/core/utils/app_styles.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/account_tab.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/catrgries_tab.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/favorets_tab.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/product_tab.dart';
-import 'package:e_commerce/featuers/sinUp/domain/entities/UserEntity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,16 +21,9 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Fluttertoast.showToast(
-    //     msg: "This is a Toast message",
-    //     toastLength: Toast.LENGTH_SHORT,
-    //     gravity: ToastGravity.BOTTOM,
-    //     backgroundColor: AppColors.blue,
-    //     timeInSecForIosWeb: 1,
-    //     textColor: Colors.white,
-    //     fontSize: 16.0
-    // );
-    // var arg = ModalRoute.of(context)!.settings.arguments as UserDataEntity;
+    bool currentPasswordShown = false;
+    bool rePasswordShown = false;
+    bool newPasswordShown = false;
     return BlocProvider(
       create: (context) => HomeBloc()
         ..add(GetCategoryEvent())
@@ -132,111 +124,126 @@ class Home extends StatelessWidget {
                       subCategoryEntities: state.subCategoryEntity ?? [])
                   : ProductTab(state.products ?? []),
               FavoritesTab(state.wishList ?? []),
-              const AccountTab()
+              AccountTab(
+                currentPasswordShown: currentPasswordShown,
+                newPasswordShown: newPasswordShown,
+                rePasswordShown: rePasswordShown,
+              )
             ];
-            return Scaffold(
-              resizeToAvoidBottomInset: false,
-              extendBody: true,
-              bottomNavigationBar: CurvedNavigationBar(
-                color: AppColors.blue,
-                backgroundColor: Colors.transparent,
-                index: state.tabIndex ?? 0,
-                items: const [
-                  Icon(
-                    Icons.home_filled,
-                    color: Colors.white,
-                  ),
-                  Icon(
-                    Icons.category,
-                    color: Colors.white,
-                  ),
-                  Icon(
-                    Icons.favorite_border,
-                    color: Colors.white,
-                  ),
-                  Icon(
-                    Icons.person,
-                    color: Colors.white,
-                  ),
-                ],
-                onTap: (value) {
-                  if (value == 1) {
-                    HomeBloc.get(context)
-                      ..add(ChangeTabEvent(value))
-                      ..add(SelectCategoryFromListEvent(
-                          0, state.categoryEntity?[0]));
-                  }
-                  else if (value == 2) {
-                    HomeBloc.get(context)
-                      ..add(ChangeTabEvent(value))
-                      ..add(GetWishListEvent());
-                  }
-                  else {
-                    HomeBloc.get(context).add(ChangeTabEvent(value));
-                  }
-                },
-              ),
-              body: Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: 18.0.w, vertical: 15.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      AppImages.routLogoAppBar,
-                      width: 76.w,
-                      height: 32.h,
+            return Form(
+              key: HomeBloc.get(context).formKey,
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                extendBody: true,
+                bottomNavigationBar: CurvedNavigationBar(
+                  color: AppColors.blue,
+                  backgroundColor: Colors.transparent,
+                  index: state.tabIndex ?? 0,
+                  items: const [
+                    Icon(
+                      Icons.home_filled,
+                      color: Colors.white,
                     ),
-                    SizedBox(
-                      height: 18.h,
+                    Icon(
+                      Icons.category,
+                      color: Colors.white,
                     ),
-                    (!(state.wishListTab??false))?
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                              textInputAction: TextInputAction.search,
-                              decoration: InputDecoration(
-                                hintText: AppStrings.searchHint,
-                                prefixIconColor: AppColors.blue,
-                                prefixIcon: IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.search),
-                                ),
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 8.h, horizontal: 5.w),
-                                focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25.r),
-                                    borderSide:
-                                        BorderSide(color: AppColors.blue)),
-                                enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide:
-                                        BorderSide(color: AppColors.blue)),
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25),
-                                    borderSide:
-                                        BorderSide(color: AppColors.blue)),
-                              )),
-                        ),
-                        SizedBox(
-                          width: 24.w,
-                        ),
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.shopping_cart_outlined))
-                      ],
-                    ):Column(
-                      children: [
-                        Text("Welcome , ${AppConstants.userName}"),
-                        Text("${AppConstants.email}"),
-                      ],
+                    Icon(
+                      Icons.favorite_border,
+                      color: Colors.white,
                     ),
-                    SizedBox(
-                      height: 18.h,
+                    Icon(
+                      Icons.person,
+                      color: Colors.white,
                     ),
-                    tabs[state.tabIndex ?? 0]
                   ],
+                  onTap: (value) {
+                    if (value == 1) {
+                      HomeBloc.get(context)
+                        ..add(ChangeTabEvent(value))
+                        ..add(SelectCategoryFromListEvent(
+                            0, state.categoryEntity?[0]));
+                    } else if (value == 2) {
+                      HomeBloc.get(context)
+                        ..add(ChangeTabEvent(value))
+                        ..add(GetWishListEvent());
+                    } else {
+                      HomeBloc.get(context).add(ChangeTabEvent(value));
+                    }
+                  },
+                ),
+                body: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 18.0.w, vertical: 15.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.asset(
+                        AppImages.routLogoAppBar,
+                        width: 76.w,
+                        height: 32.h,
+                      ),
+                      SizedBox(
+                        height: 18.h,
+                      ),
+                      (!(state.wishListTab ?? false))
+                          ? Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                      textInputAction: TextInputAction.search,
+                                      decoration: InputDecoration(
+                                        hintText: AppStrings.searchHint,
+                                        prefixIconColor: AppColors.blue,
+                                        prefixIcon: IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(Icons.search),
+                                        ),
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 8.h, horizontal: 5.w),
+                                        focusedBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(25.r),
+                                            borderSide: BorderSide(
+                                                color: AppColors.blue)),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            borderSide: BorderSide(
+                                                color: AppColors.blue)),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(25),
+                                            borderSide: BorderSide(
+                                                color: AppColors.blue)),
+                                      )),
+                                ),
+                                SizedBox(
+                                  width: 24.w,
+                                ),
+                                IconButton(
+                                    onPressed: () {},
+                                    icon: const Icon(
+                                        Icons.shopping_cart_outlined))
+                              ],
+                            )
+                          : Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Welcome , ${AppConstants.userName?.split(" ")[0]}",
+                                  style: AppStyles.h2
+                                      .copyWith(color: Colors.black),
+                                ),
+                                Text("${AppConstants.email}"),
+                              ],
+                            ),
+                      SizedBox(
+                        height: 18.h,
+                      ),
+                      tabs[state.tabIndex ?? 0]
+                    ],
+                  ),
                 ),
               ),
             );

@@ -28,4 +28,17 @@ class AppStrings {
   static const String description = "Description";
   static const String totalPrice = "Total Price";
   static const String addToCart = "Add To Cart";
+  static const String yourFullName = "Your Full Name";
+  static const String yourEmail = "Your E-Mail";
+  static const String yourPhoneNumber = "Your Phone Number";
+  static const String enterNewName = "Enter New Name";
+  static const String changePassword = "Change Password!";
+  static const String pleaseEnterName = "Please Enter Name";
+  static const String pleaseEnterEmail = "Please Enter Email";
+  static const String done = "Done!";
+  static const String enterCurrentPassword = "Enter Current Password";
+  static const String newPassword = " Enter New Password";
+  static const String rePassword = "Enter RePassword";
+  static const String success = "Success";
+  static const String toLogin = "Go To Login";
 }

@@ -1,18 +1,16 @@
-import 'package:e_commerce/featuers/home/domain/entities/ProductEntity.dart';
-import 'package:e_commerce/featuers/sinUp/domain/entities/UserEntity.dart';
+import 'package:e_commerce/featuers/edit_passwoed/presentation/pages/edite_passwoed_screen.dart';
 import 'package:e_commerce/featuers/sinUp/presentation/pages/singUp.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../featuers/home/presentation/pages/home.dart';
 import '../../featuers/login/presentation/pages/login_screen.dart';
-import '../../featuers/product_details/presentation/pages/productDeteailsScreen.dart';
 
 class AppRouts {
   static const String login = "/";
   static const String sinUp = "signUP";
   static const String home = "home";
   static const String productDetails = "productDetails";
+  static const String editePassword = "editePassword";
 }
 
 class Rout {
@@ -29,6 +27,10 @@ class Rout {
       case AppRouts.home:
         return MaterialPageRoute(
           builder: (context) => Home(),
+        );
+      case AppRouts.editePassword:
+        return MaterialPageRoute(
+          builder: (context) => EditePasswordScreen(),
         );
       // case AppRouts.productDetails:
       //   return MaterialPageRoute(

@@ -28,6 +28,10 @@ class GetWishListEvent extends HomeEvent {}
 
 class RefreshWishListEvent extends HomeEvent {}
 
+class EditeDataEvent extends HomeEvent {}
+
+class EditePasswordEvent extends HomeEvent {}
+
 class AddToWishListEvent extends HomeEvent {
   String productId;
 

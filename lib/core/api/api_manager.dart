@@ -28,4 +28,12 @@ class ApiManager {
     return dio.delete(AppConstants.baseUrl + endPoint,
         data: body, options: Options(headers: headers));
   }
+
+  Future<Response> putData(
+      {required String endPoint,
+      Map<String, dynamic>? body,
+      Map<String, dynamic>? headers}) {
+    return dio.put(AppConstants.baseUrl + endPoint,
+        data: body, options: Options(headers: headers));
+  }
 }
