@@ -8,6 +8,8 @@ import 'package:e_commerce/featuers/edit_passwoed/data/data_sources/remot/change
 import 'package:e_commerce/featuers/sinUp/data/models/UserModel.dart';
 import 'package:e_commerce/featuers/sinUp/domain/entities/UserEntity.dart';
 
+import '../../../../../core/utils/app_strings.dart';
+
 class ChangePasswordDsImpl extends ChangePasswordDS {
   ApiManager apiManager;
 
@@ -30,7 +32,7 @@ class ChangePasswordDsImpl extends ChangePasswordDS {
       UserModel userModel = UserModel.fromJson(response.data);
       return Left(userModel);
     } catch (e) {
-      return Right(RemoteFailures(e.toString()));
+      return Right(RemoteFailures(AppStrings.currentPasswordNotCorrect));
     }
   }
 }

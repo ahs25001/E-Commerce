@@ -11,4 +11,7 @@ class CachedData{
   static Future<String?> getData(String key)async{
     return  sharedPreferences.getString(key);
   }
+  static Future<bool>deleteData(String key){
+    return sharedPreferences.remove(key);
+  }
 }

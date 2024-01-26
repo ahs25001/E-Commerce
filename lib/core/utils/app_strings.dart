@@ -41,4 +41,7 @@ class AppStrings {
   static const String rePassword = "Enter RePassword";
   static const String success = "Success";
   static const String toLogin = "Go To Login";
+  static const String currentPasswordNotCorrect = "Current Password Not Correct";
+  static const String newPasswordNotSameRePassword = "New Password Not Same RePassword";
+  static const String save = "Save";
 }

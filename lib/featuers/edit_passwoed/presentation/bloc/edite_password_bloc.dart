@@ -1,4 +1,6 @@
 import 'package:e_commerce/core/api/api_manager.dart';
+import 'package:e_commerce/featuers/edit_passwoed/data/data_sources/local/change_password_lds.dart';
+import 'package:e_commerce/featuers/edit_passwoed/data/data_sources/local/change_password_lds_impl.dart';
 import 'package:e_commerce/featuers/edit_passwoed/data/data_sources/remot/change_password_ds.dart';
 import 'package:e_commerce/featuers/edit_passwoed/data/data_sources/remot/change_password_ds_impl.dart';
 import 'package:e_commerce/featuers/edit_passwoed/data/repositories/change_password_repo_impl.dart';
@@ -10,7 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/error/failuers.dart';
 
 part 'edite_password_event.dart';
-
 part 'edite_password_state.dart';
 
 class EditePasswordBloc extends Bloc<EditePasswordEvent, EditePasswordState> {
@@ -60,6 +61,8 @@ class EditePasswordBloc extends Bloc<EditePasswordEvent, EditePasswordState> {
             newPassword: event.newPassword,
             rePassword: event.rePassword);
         response.fold((l) {
+          ChangePasswordLDS changePasswordLDS = ChangePasswordLDSImpl();
+          changePasswordLDS.removeToken();
           emit(state.copyhWith(
               editePasswordScreenStatus:
                   EditePasswordScreenStatus.passwordChangedSuccess));

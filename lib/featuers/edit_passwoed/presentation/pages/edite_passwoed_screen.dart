@@ -169,32 +169,57 @@ class EditePasswordScreen extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          if (EditePasswordBloc
-                              .get(context)
-                              .formKey
-                              .currentState!
-                              .validate()) {
+                          if (EditePasswordBloc.get(context)
+                                  .formKey
+                                  .currentState!
+                                  .validate() &&
+                              EditePasswordBloc.get(context)
+                                      .newPasswordController
+                                      .text ==
+                                  EditePasswordBloc.get(context)
+                                      .rePasswordController
+                                      .text) {
                             EditePasswordBloc.get(context).add(
                                 SaveChangedPasswordEvent(
                                     currentPassword:
-                                    EditePasswordBloc
-                                        .get(context)
-                                        .currentPasswordController
-                                        .text,
-                                    newPassword: EditePasswordBloc
-                                        .get(context)
+                                        EditePasswordBloc.get(context)
+                                            .currentPasswordController
+                                            .text,
+                                    newPassword: EditePasswordBloc.get(context)
                                         .newPasswordController
                                         .text,
-                                    rePassword: EditePasswordBloc
-                                        .get(context)
+                                    rePassword: EditePasswordBloc.get(context)
                                         .rePasswordController
                                         .text));
+                          } else if (EditePasswordBloc.get(context)
+                                  .newPasswordController
+                                  .text !=
+                              EditePasswordBloc.get(context)
+                                  .rePasswordController
+                                  .text) {
+                            showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text(AppStrings.error),
+                                  content: const Text(AppStrings.newPasswordNotSameRePassword),
+                                  actions: [
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text(AppStrings.cancel))
+                                  ],
+                                );
+                              },
+                            );
                           }
                         },
-                        child: Text("Save", style: AppStyles.h2),
                         style: AppStyles.buttonStyle.copyWith(
                             backgroundColor:
                             MaterialStatePropertyAll(AppColors.blue)),
+                        child: Text(AppStrings.save, style: AppStyles.h2),
                       )
                     ],
                   ),
