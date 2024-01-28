@@ -11,13 +11,12 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../../product_details/presentation/pages/productDeteailsScreen.dart';
 
 class ProductItem extends StatelessWidget {
-  ProductDataEntity productDataEntity;
-bool inWishList;
-  ProductItem(this.productDataEntity, this.inWishList);
+  final ProductDataEntity productDataEntity;
+final bool inWishList;
+  const ProductItem(this.productDataEntity, this.inWishList, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<int> numbers = [1, 2, 3, 4];
     return Card(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18.r),
@@ -123,11 +122,15 @@ bool inWishList;
                         color: Colors.amber,
                       ),
                       const Spacer(),
-                      Icon(
-                        Icons.add_circle_outlined,
-                        size: 33.sp,
-                        color: AppColors.blue,
-                      )
+                      InkWell(
+                          onTap: () {
+                            HomeBloc.get(context).add(AddToCartEvent(productDataEntity.id??""));
+                          },
+                          child: Icon(
+                            Icons.add_circle_outlined,
+                            size: 33.sp,
+                            color: AppColors.blue,
+                          ))
                     ],
                   ),
                 ],

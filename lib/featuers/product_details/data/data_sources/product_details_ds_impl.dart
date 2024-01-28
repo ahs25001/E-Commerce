@@ -7,9 +7,10 @@ import 'package:e_commerce/core/utils/app_constants.dart';
 import 'package:e_commerce/featuers/home/data/models/AddToWishResponse.dart';
 import 'package:e_commerce/featuers/home/data/models/ProductModel.dart';
 import 'package:e_commerce/featuers/product_details/data/data_sources/product_ds.dart';
+import 'package:injectable/injectable.dart';
 
 import '../../../home/data/models/RemoveResponse.dart';
-
+@Injectable(as: ProductDetailsDs)
 class ProductDetailsDSImpl extends ProductDetailsDs {
   ApiManager apiManager;
 

@@ -16,6 +16,8 @@ enum HomeScreenStatus {
   getBrandsSuccessfully,
   getBrandsError,
   getProductsError,
+  addToCartSuccess,
+  addToCartFull,
   init
 }
 

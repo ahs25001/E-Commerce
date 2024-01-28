@@ -1,9 +1,19 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:e_commerce/config.dart';
+import 'package:e_commerce/config/routes/routes.dart';
 import 'package:e_commerce/core/utils/app_colors.dart';
 import 'package:e_commerce/core/utils/app_constants.dart';
 import 'package:e_commerce/core/utils/app_images.dart';
 import 'package:e_commerce/core/utils/app_strings.dart';
 import 'package:e_commerce/core/utils/app_styles.dart';
+import 'package:e_commerce/featuers/home/domain/use_cases/AddToCartUseCase.dart';
+import 'package:e_commerce/featuers/home/domain/use_cases/add_to_wish_list_use_case.dart';
+import 'package:e_commerce/featuers/home/domain/use_cases/get_brands_use_case.dart';
+import 'package:e_commerce/featuers/home/domain/use_cases/get_category_use_case.dart';
+import 'package:e_commerce/featuers/home/domain/use_cases/get_product.dart';
+import 'package:e_commerce/featuers/home/domain/use_cases/get_sub_category_usecase.dart';
+import 'package:e_commerce/featuers/home/domain/use_cases/get_wish_list.dart';
+import 'package:e_commerce/featuers/home/domain/use_cases/remove_from_wish_list_usecase.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/account_tab.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/catrgries_tab.dart';
 import 'package:e_commerce/featuers/home/presentation/widgets/favorets_tab.dart';
@@ -18,6 +28,7 @@ import '../bloc/home_bloc.dart';
 import '../widgets/home_tab.dart';
 
 class Home extends StatelessWidget {
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +36,15 @@ class Home extends StatelessWidget {
     bool rePasswordShown = false;
     bool newPasswordShown = false;
     return BlocProvider(
-      create: (context) => HomeBloc()
+      create: (context) => HomeBloc(
+          addToCartUseCase: getIt<AddToCartUseCase>(),
+          addToWishListUseCase: getIt<AddToWishListUseCase>(),
+          getBrandsUseCase: getIt<GetBrandsUseCase>(),
+          getCategoryUseCase: getIt<GetCategoryUseCase>(),
+          getProductUseCase: getIt<GetProductUseCase>(),
+          getSubCategoryUseCase: getIt<GetSubCategoryUseCase>(),
+          getWishListUseCase: getIt<GetWishListUseCase>(),
+          removeFromWishListUseCase: getIt<RemoveFromWishListUseCase>())
         ..add(GetCategoryEvent())
         ..add(GEtBrandsEvent())
         ..add(GetWishListEvent()),
@@ -36,16 +55,19 @@ class Home extends StatelessWidget {
               showDialog(
                 barrierDismissible: false,
                 context: context,
-                builder: (context) => AlertDialog(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  title: Center(
-                        child: LoadingAnimationWidget.fourRotatingDots(
-                          color: AppColors.blue,
-                          size: 90.sp,
-                        ),
+                builder: (context) => PopScope(
+                  canPop: false,
+                  child: AlertDialog(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    title: Center(
+                      child: LoadingAnimationWidget.fourRotatingDots(
+                        color: AppColors.blue,
+                        size: 90.sp,
                       ),
                     ),
+                  ),
+                ),
               );
             } else if (state.homeScreenStatus ==
                     HomeScreenStatus.getBrandsSuccessfully ||
@@ -61,7 +83,8 @@ class Home extends StatelessWidget {
             } else if (state.homeScreenStatus ==
                     HomeScreenStatus.addToWishListSuccessfully ||
                 state.homeScreenStatus ==
-                    HomeScreenStatus.removeFromWishListSuccessfully) {
+                    HomeScreenStatus.removeFromWishListSuccessfully ||
+                state.homeScreenStatus == HomeScreenStatus.addToCartSuccess) {
               Navigator.pop(context);
               HomeBloc.get(context).add(GetWishListEvent());
               Fluttertoast.showToast(
@@ -81,32 +104,36 @@ class Home extends StatelessWidget {
                 state.homeScreenStatus ==
                     HomeScreenStatus.getSubCategoryError ||
                 state.homeScreenStatus == HomeScreenStatus.getProductsError ||
-                state.homeScreenStatus == HomeScreenStatus.getCategoryError) {
+                state.homeScreenStatus == HomeScreenStatus.getCategoryError ||
+                state.homeScreenStatus == HomeScreenStatus.addToCartFull) {
               showDialog(
                 barrierDismissible: false,
                 context: context,
                 builder: (context) {
-                  return AlertDialog(
-                    title: const Text(AppStrings.error),
-                    content: Text(state.failures?.massage ?? ""),
-                    actions: [
-                      ElevatedButton(
-                          onPressed: () {
-                            if (state.homeScreenStatus ==
-                                    HomeScreenStatus.getBrandsError ||
-                                state.homeScreenStatus ==
-                                    HomeScreenStatus.getCategoryError) {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            } else {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                            }
-                          },
-                          child: const Text(AppStrings.cancel))
-                    ],
+                  return PopScope(
+                    canPop: false,
+                    child: AlertDialog(
+                      title: const Text(AppStrings.error),
+                      content: Text(state.failures?.massage ?? ""),
+                      actions: [
+                        ElevatedButton(
+                            onPressed: () {
+                              if (state.homeScreenStatus ==
+                                      HomeScreenStatus.getBrandsError ||
+                                  state.homeScreenStatus ==
+                                      HomeScreenStatus.getCategoryError) {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              } else {
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              }
+                            },
+                            child: const Text(AppStrings.cancel))
+                      ],
+                    ),
                   );
                 },
               );
@@ -222,7 +249,10 @@ class Home extends StatelessWidget {
                                   width: 24.w,
                                 ),
                                 IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                          context, AppRouts.cart);
+                                    },
                                     icon: const Icon(
                                         Icons.shopping_cart_outlined))
                               ],

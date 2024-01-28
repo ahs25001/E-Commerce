@@ -44,4 +44,5 @@ class AppStrings {
   static const String currentPasswordNotCorrect = "Current Password Not Correct";
   static const String newPasswordNotSameRePassword = "New Password Not Same RePassword";
   static const String save = "Save";
+  static const String cart = "Cart";
 }

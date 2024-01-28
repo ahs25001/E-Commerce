@@ -44,13 +44,16 @@ class EditePasswordScreen extends StatelessWidget {
               barrierDismissible: false,
               context: context,
               builder: (context) =>
-                  AlertDialog(
-                    backgroundColor: Colors.transparent,
-                    elevation: 0,
-                    title: Center(
-                      child: LoadingAnimationWidget.fourRotatingDots(
-                        color: AppColors.blue,
-                        size: 90.sp,
+                  PopScope(
+                    canPop:false,
+                    child: AlertDialog(
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      title: Center(
+                        child: LoadingAnimationWidget.fourRotatingDots(
+                          color: AppColors.blue,
+                          size: 90.sp,
+                        ),
                       ),
                     ),
                   ),
@@ -60,17 +63,20 @@ class EditePasswordScreen extends StatelessWidget {
             showDialog(
               context: context,
               builder: (context) {
-                return AlertDialog(
-                  title: const Text(AppStrings.success),
-                  content: const Text(AppStrings.toLogin),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, AppRouts.login, (route) => false);
-                        },
-                        child: const Text(AppStrings.done))
-                  ],
+                return PopScope(
+                  canPop:false,
+                  child: AlertDialog(
+                    title: const Text(AppStrings.success),
+                    content: const Text(AppStrings.toLogin),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, AppRouts.login, (route) => false);
+                          },
+                          child: const Text(AppStrings.done))
+                    ],
+                  ),
                 );
               },
             );
@@ -78,15 +84,18 @@ class EditePasswordScreen extends StatelessWidget {
           else if (state.editePasswordScreenStatus ==
               EditePasswordScreenStatus.passwordChangedFulled) {
             showDialog(context: context, builder: (context) {
-              return AlertDialog(
-                title: const Text(AppStrings.error),
-                content: Text(state.failures?.massage ?? ""),
-                actions: [
-                  ElevatedButton(onPressed: (){
-                    Navigator.pop(context);
-                    Navigator.pop(context);
-                  }, child: const Text(AppStrings.cancel))
-                ],
+              return PopScope(
+                canPop:false,
+                child: AlertDialog(
+                  title: const Text(AppStrings.error),
+                  content: Text(state.failures?.massage ?? ""),
+                  actions: [
+                    ElevatedButton(onPressed: (){
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    }, child: const Text(AppStrings.cancel))
+                  ],
+                ),
               );
             },);
           }

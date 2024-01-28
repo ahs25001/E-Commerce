@@ -2,6 +2,7 @@ import 'package:e_commerce/featuers/edit_passwoed/presentation/pages/edite_passw
 import 'package:e_commerce/featuers/sinUp/presentation/pages/singUp.dart';
 import 'package:flutter/material.dart';
 
+import '../../featuers/cart/presentation/pages/cart_screen.dart';
 import '../../featuers/home/presentation/pages/home.dart';
 import '../../featuers/login/presentation/pages/login_screen.dart';
 
@@ -11,6 +12,7 @@ class AppRouts {
   static const String home = "home";
   static const String productDetails = "productDetails";
   static const String editePassword = "editePassword";
+  static const String cart = "cart";
 }
 
 class Rout {
@@ -32,6 +34,8 @@ class Rout {
         return MaterialPageRoute(
           builder: (context) => EditePasswordScreen(),
         );
+      case AppRouts.cart :
+        return MaterialPageRoute(builder: (context) => CartScreen(),);
       // case AppRouts.productDetails:
       //   return MaterialPageRoute(
       //       builder: (context) => ProductDetails(settings.arguments as ProductDataEntity),

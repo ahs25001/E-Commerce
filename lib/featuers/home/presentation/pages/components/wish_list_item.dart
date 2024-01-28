@@ -11,9 +11,9 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import '../../../../../core/utils/app_colors.dart';
 
 class WishListItem extends StatelessWidget {
-  ProductDataEntity productDataEntity;
+  final ProductDataEntity productDataEntity;
 
-  WishListItem(this.productDataEntity);
+  const WishListItem(this.productDataEntity, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,6 @@ class WishListItem extends StatelessWidget {
                       InkWell(
                         onTap: () => Navigator.push(context, MaterialPageRoute(
                           builder: (context) {
-                            print("id : ${productDataEntity.id}");
                             return ProductDetails(
                               productDataEntity: productDataEntity,
                               fromWishTab: true,
@@ -91,9 +90,11 @@ class WishListItem extends StatelessWidget {
                         style: AppStyles.h2
                             .copyWith(fontSize: 18.sp, color: AppColors.blue),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          HomeBloc.get(context).add(AddToCartEvent(productDataEntity.id??""));
+                        },
                         child: Container(
                           padding: EdgeInsets.symmetric(
                               vertical: 8.h, horizontal: 10.w),

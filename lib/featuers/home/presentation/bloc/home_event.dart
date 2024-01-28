@@ -4,15 +4,15 @@ part of 'home_bloc.dart';
 abstract class HomeEvent {}
 
 class SelectCategoryFromListEvent extends HomeEvent {
-  int selectedIndex;
-  CategoryEntity? selectedCategory;
+ final int selectedIndex;
+ final CategoryEntity? selectedCategory;
 
   SelectCategoryFromListEvent(this.selectedIndex, this.selectedCategory);
 }
 
 class SelectCategoryFromHomeEvent extends HomeEvent {
-  int selectedIndex;
-  int tabIndex;
+  final int selectedIndex;
+  final int tabIndex;
 
   //CategoryEntity? selectedCategory;
 
@@ -33,29 +33,34 @@ class EditeDataEvent extends HomeEvent {}
 class EditePasswordEvent extends HomeEvent {}
 
 class AddToWishListEvent extends HomeEvent {
-  String productId;
+  final String productId;
 
   AddToWishListEvent(this.productId);
 }
 
+class AddToCartEvent extends HomeEvent {
+  final String productId;
+
+  AddToCartEvent(this.productId);
+}
+
 class RemoveWishListEvent extends HomeEvent {
-  String productId;
+  final String productId;
 
   RemoveWishListEvent(this.productId);
 }
 
 class BackToCategoriesTabEvent extends HomeEvent {}
-
 class GEtBrandsEvent extends HomeEvent {}
 
 class SelectSubCategoryEvent extends HomeEvent {
-  int selectedIndex;
+ final int selectedIndex;
 
   SelectSubCategoryEvent(this.selectedIndex);
 }
 
 class ChangeTabEvent extends HomeEvent {
-  int index;
+ final int index;
 
   ChangeTabEvent(this.index);
 }

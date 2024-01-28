@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
@@ -8,7 +9,8 @@ import 'package:e_commerce/core/error/failuers.dart';
 import 'package:e_commerce/featuers/sinUp/data/data_sources/remot/remote_ds.dart';
 import 'package:e_commerce/featuers/sinUp/data/models/UserModel.dart';
 import 'package:e_commerce/featuers/sinUp/data/models/request_data.dart';
-
+import 'package:injectable/injectable.dart';
+@Injectable(as: RemoteDataSource)
 class RemoteDataSourceImpl implements RemoteDataSource {
   ApiManager apiManager;
 

@@ -1,9 +1,11 @@
+import 'package:e_commerce/config.dart';
 import 'package:e_commerce/config/routes/routes.dart';
 import 'package:e_commerce/core/utils/app_colors.dart';
 import 'package:e_commerce/core/utils/app_components.dart';
 import 'package:e_commerce/core/utils/app_images.dart';
 import 'package:e_commerce/core/utils/app_strings.dart';
 import 'package:e_commerce/core/utils/app_styles.dart';
+import 'package:e_commerce/featuers/login/domain/use_cases/login_use_case.dart';
 import 'package:e_commerce/featuers/sinUp/presentation/bloc/sign_up_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,20 +19,23 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LoginBloc(),
+      create: (context) => LoginBloc(getIt<LoginUseCase>()),
       child: BlocConsumer<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state.screenStatus == ScreenStatus.loading) {
             showDialog(
               barrierDismissible: false,
               context: context,
-              builder: (context) => AlertDialog(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                title: Center(
-                  child: LoadingAnimationWidget.fourRotatingDots(
-                    color: AppColors.blue,
-                    size: 90.sp,
+              builder: (context) => PopScope(
+                canPop:false,
+                child: AlertDialog(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  title: Center(
+                    child: LoadingAnimationWidget.fourRotatingDots(
+                      color: AppColors.blue,
+                      size: 90.sp,
+                    ),
                   ),
                 ),
               ),
@@ -47,17 +52,20 @@ class LoginScreen extends StatelessWidget {
               barrierDismissible: false,
               context: context,
               builder: (context) {
-                return AlertDialog(
-                  title: const Text(AppStrings.error),
-                  content: Text(state.failures?.massage ?? ""),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        },
-                        child: const Text(AppStrings.cancel))
-                  ],
+                return PopScope(
+                  canPop:false,
+                  child: AlertDialog(
+                    title: const Text(AppStrings.error),
+                    content: Text(state.failures?.massage ?? ""),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: const Text(AppStrings.cancel))
+                    ],
+                  ),
                 );
               },
             );

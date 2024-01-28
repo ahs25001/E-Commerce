@@ -4,10 +4,11 @@ import 'package:e_commerce/core/cache/shared_pref.dart';
 import 'package:e_commerce/core/utils/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
+import "config.dart";
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await CachedData.init();
+  configureDependencies();
   String start;
   String? token= await CachedData.getData("token");
   String? userName= await CachedData.getData("name");

@@ -1,9 +1,13 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:e_commerce/config.dart';
 import 'package:e_commerce/core/utils/app_colors.dart';
 import 'package:e_commerce/core/utils/app_strings.dart';
 import 'package:e_commerce/core/utils/app_styles.dart';
 import 'package:e_commerce/featuers/home/domain/entities/ProductEntity.dart';
 import 'package:e_commerce/featuers/home/presentation/bloc/home_bloc.dart';
+import 'package:e_commerce/featuers/product_details/domain/use_cases/add_to_wish_list_usecase.dart';
+import 'package:e_commerce/featuers/product_details/domain/use_cases/get_wish_list_ids_usecase.dart';
+import 'package:e_commerce/featuers/product_details/domain/use_cases/remove_from_wish_list_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -14,34 +18,38 @@ import '../bloc/product_deteils_bloc.dart';
 import '../widgets/image_cover_item.dart';
 
 class ProductDetails extends StatelessWidget {
-  ProductDataEntity productDataEntity;
-  bool fromWishTab;
+ final ProductDataEntity productDataEntity;
+  final bool fromWishTab;
 
-  ProductDetails({required this.productDataEntity, required this.fromWishTab});
+  const ProductDetails({super.key, required this.productDataEntity, required this.fromWishTab});
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
+    return
         BlocProvider(
-          create: (context) => ProductDetailsBloc()..add(GetWishListIdsEvent()),
-        ), BlocProvider(
-          create: (context) => HomeBloc(),
-        )
-      ],
+          create: (context) => ProductDetailsBloc(
+              getIt<GetWishListIdsUseCase>(),
+              getIt<AddToWishListUseCase>() ,
+              getIt<DeleteFromWishListUseCase>())
+            ..add(GetWishListIdsEvent()),
+
+
       child: BlocConsumer<ProductDetailsBloc, ProductDetailsState>(
         listener: (context, state) {
           if (state.productScreenStatus == ProductScreenStatus.loading) {
             showDialog(
               barrierDismissible: false,
               context: context,
-              builder: (context) => AlertDialog(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                title: Center(
-                  child: LoadingAnimationWidget.fourRotatingDots(
-                    color: AppColors.blue,
-                    size: 90.sp,
+              builder: (context) => PopScope(
+                canPop: false,
+                child: AlertDialog(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  title: Center(
+                    child: LoadingAnimationWidget.fourRotatingDots(
+                      color: AppColors.blue,
+                      size: 90.sp,
+                    ),
                   ),
                 ),
               ),
@@ -56,17 +64,20 @@ class ProductDetails extends StatelessWidget {
               barrierDismissible: false,
               context: context,
               builder: (context) {
-                return AlertDialog(
-                  title: const Text(AppStrings.error),
-                  content: Text(state.failures?.massage ?? ""),
-                  actions: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        },
-                        child: const Text(AppStrings.cancel))
-                  ],
+                return PopScope(
+                  canPop: false,
+                  child: AlertDialog(
+                    title: const Text(AppStrings.error),
+                    content: Text(state.failures?.massage ?? ""),
+                    actions: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: const Text(AppStrings.cancel))
+                    ],
+                  ),
                 );
               },
             );
@@ -126,9 +137,8 @@ class ProductDetails extends StatelessWidget {
                       items: (productDataEntity.images ?? [])
                           .map((e) => CoverImageItem(
                               imageLink: (fromWishTab)
-                                  ? ("https://ecommerce.routemisr.com/Route-Academy-products/$e" ??
-                                      "")
-                                  : e ?? "",
+                                  ? ("https://ecommerce.routemisr.com/Route-Academy-products/$e")
+                                  : e ,
                               id: productDataEntity.id ?? ""))
                           .toList(),
                       options: CarouselOptions(
@@ -163,7 +173,7 @@ class ProductDetails extends StatelessWidget {
                           style: AppStyles.h2.copyWith(color: AppColors.blue),
                         ),
                         Text(
-                          "${AppStrings.eGP} ${productDataEntity.price.toString() ?? ""}",
+                          "${AppStrings.eGP} ${productDataEntity.price.toString()}",
                           style: AppStyles.h2.copyWith(color: AppColors.blue),
                         )
                       ],
@@ -215,7 +225,7 @@ class ProductDetails extends StatelessWidget {
                                     color: Colors.white,
                                   )),
                               Text((state.countOfProduct ?? 1).toString(),
-                                  style: TextStyle(color: Colors.white)),
+                                  style: const TextStyle(color: Colors.white)),
                               IconButton(
                                   onPressed: () {
                                     if ((state.countOfProduct ?? 1) <
@@ -289,7 +299,7 @@ class ProductDetails extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.add_shopping_cart_outlined,
                                     color: Colors.white,
                                   ),
