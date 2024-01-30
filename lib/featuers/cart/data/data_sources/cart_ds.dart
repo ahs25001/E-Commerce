@@ -5,4 +5,6 @@ import 'package:injectable/injectable.dart';
 @injectable
 abstract class CartDs{
 Future<Either<CartProductEntity,Failures>> getCartProducts();
+Future<Either<CartProductEntity,Failures>> upDateCountCartProduct(String id,num count);
+Future<Either<String,Failures>> clearCart();
 }

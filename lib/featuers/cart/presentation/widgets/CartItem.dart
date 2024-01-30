@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce/featuers/cart/domain/entities/CartProuductEntety.dart';
+import 'package:e_commerce/featuers/cart/presentation/bloc/cart_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -71,41 +72,49 @@ class CartItem extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Text(
-                      "${AppStrings.eGP} ${productsEntity?.price.toString()}",
-                      style: AppStyles.h2
-                          .copyWith(fontSize: 18.sp, color: AppColors.blue),
-                    ),
-                    Spacer(),
-                    Container(
-                      decoration: BoxDecoration(
-                          color: AppColors.blue,
-                          borderRadius: BorderRadius.circular(35.r)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          IconButton(
-                              onPressed: () {
-
-                              },
-                              icon: const Icon(
-                                Icons.do_not_disturb_on_outlined,
-                                color: Colors.white,
-                              )),
-                          Text("1",
-                              style: const TextStyle(color: Colors.white)),
-                          IconButton(
-                              onPressed: () {
-
-                              },
-                              icon: const Icon(
-                                Icons.add_circle_outline,
-                                color: Colors.white,
-                              )),
-                        ],
+                      Text(
+                        "${AppStrings.eGP} ${productsEntity?.price.toString()}",
+                        style: AppStyles.h2
+                            .copyWith(fontSize: 18.sp, color: AppColors.blue),
                       ),
-                    )
-                  ],
+                      const Spacer(),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: AppColors.blue,
+                            borderRadius: BorderRadius.circular(35.r)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  num count = (productsEntity?.count) ?? 0;
+                                  if (count > 0) {
+                                    CartBloc.get(context).add(UpDateCountEvent(
+                                        id: productsEntity?.product?.id ?? "",
+                                        count: --count));
+                                  }
+                                },
+                                icon: const Icon(
+                                  Icons.remove_circle_outline_outlined,
+                                  color: Colors.white,
+                                )),
+                            Text(((productsEntity?.count) ?? 0).toString(),
+                                style: const TextStyle(color: Colors.white)),
+                            IconButton(
+                                onPressed: () {
+                                  num count = (productsEntity?.count) ?? 0;
+                                  CartBloc.get(context).add(UpDateCountEvent(
+                                      id: productsEntity?.product?.id ?? "",
+                                      count: ++count));
+                                },
+                                icon: const Icon(
+                                  Icons.add_circle_outline,
+                                  color: Colors.white,
+                                )),
+                          ],
+                        ),
+                      )
+                    ],
                 )
               ],
             ),

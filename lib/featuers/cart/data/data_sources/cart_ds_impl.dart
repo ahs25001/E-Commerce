@@ -37,4 +37,31 @@ class CartDsImpl extends CartDs {
       return Right(RemoteFailures(massage));
     }
   }
+
+  @override
+  Future<Either<CartProductEntity, Failures>> upDateCountCartProduct(String id,num count)async {
+  try{
+    Response response = await apiManager.putData(
+        endPoint: "${EndPoints.getCartProducts}/$id",
+        headers: {"token": AppConstants.token},body: {"count":count});
+    CartProductModel cartProductModel =
+    CartProductModel.fromJson(response.data);
+    return Left(cartProductModel);
+
+  }catch(e){
+    return Right(RemoteFailures(e.toString()));
+  }
+  }
+
+  @override
+  Future<Either<String, Failures>> clearCart()async {
+    try {
+       await apiManager.deleteData(
+          endPoint: EndPoints.getCartProducts,
+          headers: {"token": AppConstants.token});
+      return const Left("Success");
+    } catch (e) {
+      return Right(RemoteFailures(e.toString()));
+    }
+  }
 }

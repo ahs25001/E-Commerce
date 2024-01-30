@@ -15,20 +15,22 @@ class AppStyles{
     color: Colors.white,
     fontWeight: FontWeight.w300,
   );
-  static  TextStyle titleProductStyle=GoogleFonts.poppins(
+  static TextStyle titleProductStyle = GoogleFonts.poppins(
     fontSize: 16.sp,
     color: AppColors.blue,
     fontWeight: FontWeight.w300,
   );
-  static  TextStyle h2=GoogleFonts.poppins(
+  static TextStyle h2 = GoogleFonts.poppins(
     fontSize: 20.sp,
     color: Colors.white,
     fontWeight: FontWeight.w500,
   );
-  static ButtonStyle buttonStyle=ElevatedButton.styleFrom(
-    padding: EdgeInsets.symmetric(horizontal:160.w ,vertical: 23.h),
-     backgroundColor: Colors.white,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.r))
-  );
-
+  static ButtonStyle buttonStyle = ElevatedButton.styleFrom(
+      padding: EdgeInsets.symmetric(horizontal: 160.w, vertical: 23.h),
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.r)));
+  static ButtonStyle checkOutButtonStyle = ElevatedButton.styleFrom(
+      padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 13.h),
+      backgroundColor: AppColors.blue,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.r)));
 }

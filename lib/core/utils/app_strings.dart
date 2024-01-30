@@ -45,4 +45,6 @@ class AppStrings {
   static const String newPasswordNotSameRePassword = "New Password Not Same RePassword";
   static const String save = "Save";
   static const String cart = "Cart";
+  static const String checkOut = "Check Out";
+  static const String count = "Count";
 }
