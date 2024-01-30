@@ -4,12 +4,16 @@ import 'package:e_commerce/core/api/api_manager.dart';
 import 'package:e_commerce/core/api/end_points.dart';
 import 'package:e_commerce/core/error/failuers.dart';
 import 'package:e_commerce/core/utils/app_constants.dart';
+import 'package:e_commerce/featuers/home/data/models/AddToCartResponse.dart';
 import 'package:e_commerce/featuers/home/data/models/AddToWishResponse.dart';
 import 'package:e_commerce/featuers/home/data/models/ProductModel.dart';
 import 'package:e_commerce/featuers/product_details/data/data_sources/product_ds.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../cart/data/models/CartProductModel.dart';
+import '../../../cart/domain/entities/CartProuductEntety.dart';
 import '../../../home/data/models/RemoveResponse.dart';
+
 @Injectable(as: ProductDetailsDs)
 class ProductDetailsDSImpl extends ProductDetailsDs {
   ApiManager apiManager;
@@ -65,6 +69,38 @@ class ProductDetailsDSImpl extends ProductDetailsDs {
           "DioException [connection error]: The connection errored: Failed host lookup: 'ecommerce.routemisr.com'\nError: SocketException: Failed host lookup: 'ecommerce.routemisr.com' (OS Error: No address associated with hostname, errno = 7)") {
         return Right(RemoteFailures("Check Network"));
       }
+      return Right(RemoteFailures(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<AddToCartResponse?, Failures>> addToCart(
+      String productId) async {
+    try {
+      Response response = await apiManager.postData(
+          endPoint: EndPoints.addToCart,
+          body: {"productId": productId},
+          headers: {"token": AppConstants.token});
+      AddToCartResponse addToCartResponse =
+          AddToCartResponse.fromJson(response.data);
+      return Left(addToCartResponse);
+    } catch (e) {
+      return Right(RemoteFailures(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<CartProductEntity, Failures>> upDateCountCartProduct(
+      String id, num count) async {
+    try {
+      Response response = await apiManager.putData(
+          endPoint: "${EndPoints.getCartProducts}/$id",
+          headers: {"token": AppConstants.token},
+          body: {"count": count});
+      CartProductModel cartProductModel =
+          CartProductModel.fromJson(response.data);
+      return Left(cartProductModel);
+    } catch (e) {
       return Right(RemoteFailures(e.toString()));
     }
   }

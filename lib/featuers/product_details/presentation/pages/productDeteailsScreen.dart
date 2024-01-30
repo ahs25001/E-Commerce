@@ -1,10 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:e_commerce/config.dart';
+import 'package:e_commerce/config/routes/routes.dart';
 import 'package:e_commerce/core/utils/app_colors.dart';
 import 'package:e_commerce/core/utils/app_strings.dart';
 import 'package:e_commerce/core/utils/app_styles.dart';
 import 'package:e_commerce/featuers/home/domain/entities/ProductEntity.dart';
 import 'package:e_commerce/featuers/home/presentation/bloc/home_bloc.dart';
+import 'package:e_commerce/featuers/product_details/domain/use_cases/add_to_cart_use_case.dart';
 import 'package:e_commerce/featuers/product_details/domain/use_cases/add_to_wish_list_usecase.dart';
 import 'package:e_commerce/featuers/product_details/domain/use_cases/get_wish_list_ids_usecase.dart';
 import 'package:e_commerce/featuers/product_details/domain/use_cases/remove_from_wish_list_usecase.dart';
@@ -14,6 +16,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
+import '../../domain/use_cases/up_date_cart_use_case.dart';
 import '../bloc/product_deteils_bloc.dart';
 import '../widgets/image_cover_item.dart';
 
@@ -28,12 +31,12 @@ class ProductDetails extends StatelessWidget {
     return
         BlocProvider(
           create: (context) => ProductDetailsBloc(
-              getIt<GetWishListIdsUseCase>(),
-              getIt<AddToWishListUseCase>() ,
-              getIt<DeleteFromWishListUseCase>())
-            ..add(GetWishListIdsEvent()),
-
-
+          getIt<GetWishListIdsUseCase>(),
+          getIt<AddToWishListUseCase>(),
+          getIt<DeleteFromWishListUseCase>(),
+          getIt<AddToCartFromProductScreenUseCase>(),
+          getIt<UpDateCountFromProductScreenUseCase>())
+        ..add(GetWishListIdsEvent()),
       child: BlocConsumer<ProductDetailsBloc, ProductDetailsState>(
         listener: (context, state) {
           if (state.productScreenStatus == ProductScreenStatus.loading) {
@@ -59,7 +62,10 @@ class ProductDetails extends StatelessWidget {
               state.productScreenStatus ==
                   ProductScreenStatus.addToWishListError ||
               state.productScreenStatus ==
-                  ProductScreenStatus.getWishListIdsError) {
+                  ProductScreenStatus.getWishListIdsError ||
+              state.productScreenStatus ==
+                  ProductScreenStatus.upDateCountItemFull ||
+              state.productScreenStatus == ProductScreenStatus.addToCartError) {
             showDialog(
               barrierDismissible: false,
               context: context,
@@ -99,6 +105,25 @@ class ProductDetails extends StatelessWidget {
           } else if (state.productScreenStatus ==
               ProductScreenStatus.getWishListIdsSuccessfully) {
             Navigator.pop(context);
+          } else if (state.productScreenStatus ==
+              ProductScreenStatus.addToCartSuccess) {
+            Fluttertoast.showToast(
+                msg: state.massage ?? "Done",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                backgroundColor: AppColors.blue,
+                timeInSecForIosWeb: 3,
+                textColor: Colors.white,
+                fontSize: 13.0);
+            Navigator.pop(context);
+
+            ProductDetailsBloc.get(context).add(
+                UpDateCountFromProductDetailsScreenEvent(
+                    id: productDataEntity.id ?? "",
+                    count: state.countOfProduct ?? 0));
+          } else if (state.productScreenStatus ==
+              ProductScreenStatus.upDateCountItemSuccess) {
+            Navigator.pop(context);
           }
         },
         builder: (context, state) {
@@ -114,13 +139,9 @@ class ProductDetails extends StatelessWidget {
               ),
               actions: [
                 IconButton(
-                    onPressed: () {},
-                    icon: Icon(
-                      Icons.search,
-                      size: 30.sp,
-                    )),
-                IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRouts.cart);
+                    },
                     icon: Icon(
                       Icons.shopping_cart_outlined,
                       size: 30.sp,
@@ -289,7 +310,9 @@ class ProductDetails extends StatelessWidget {
                         ),
                         Expanded(
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              ProductDetailsBloc.get(context).add(AddToCartFromProductScreenEvent(productDataEntity.id??""));
+                            },
                             child: Container(
                               padding: EdgeInsets.symmetric(
                                   vertical: 8.h, horizontal: 10.w),
@@ -297,7 +320,8 @@ class ProductDetails extends StatelessWidget {
                                   color: AppColors.blue,
                                   borderRadius: BorderRadius.circular(35.r)),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   const Icon(
                                     Icons.add_shopping_cart_outlined,

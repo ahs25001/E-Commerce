@@ -1,11 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:e_commerce/core/utils/app_styles.dart';
 import 'package:e_commerce/featuers/home/presentation/pages/components/Category_item_list.dart';
 import 'package:e_commerce/featuers/home/presentation/pages/components/Sub_category_item.dart';
-import 'package:e_commerce/featuers/home/presentation/pages/home.dart';
-import 'package:e_commerce/featuers/home/presentation/pages/home.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 

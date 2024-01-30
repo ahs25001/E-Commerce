@@ -28,3 +28,14 @@ class DeleteFromWishListEvent extends ProductDetailsEvent {
 
   DeleteFromWishListEvent(this.productId);
 }
+class UpDateCountFromProductDetailsScreenEvent extends ProductDetailsEvent {
+  String id;
+  num count;
+
+  UpDateCountFromProductDetailsScreenEvent({required this.id, required this.count});
+}
+class AddToCartFromProductScreenEvent extends ProductDetailsEvent{
+  String id;
+
+  AddToCartFromProductScreenEvent(this.id);
+}

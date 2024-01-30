@@ -16,8 +16,8 @@ class CartRepoImpl extends CartRepo {
   Future<Either<CartProductEntity, Failures>> getCartProduct() =>
       cartDs.getCartProducts();
 
-  Future<Either<CartProductEntity, Failures>> upDateCountCartProduct(
-          String id, num count) =>
+  @override
+  Future<Either<CartProductEntity, Failures>> upDateCountCartProduct(String id, num count) =>
       cartDs.upDateCountCartProduct(id, count);
 
   @override

@@ -1,6 +1,5 @@
 import 'package:e_commerce/core/utils/app_styles.dart';
 import 'package:e_commerce/featuers/home/domain/entities/CategoryEntity.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -18,7 +17,7 @@ class SubCategoryItem extends StatelessWidget {
           flex: 3,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(18.r),
-            child:Image.asset("assets/images/1700682547008.jpg",width: 90.w,height: 90.h)
+            child:Image.asset("assets/images/R.jpg",width: 90.w,height: 90.h)
           ),
         ),
         SizedBox(

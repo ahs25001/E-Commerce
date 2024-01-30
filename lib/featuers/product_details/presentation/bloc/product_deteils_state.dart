@@ -9,7 +9,11 @@ enum ProductScreenStatus {
   getWishListIdsError,
   addToWishListSuccessfully,
   getWishListIdsSuccessfully,
-  removeFromWishListSuccessfully
+  removeFromWishListSuccessfully,
+  upDateCountItemSuccess,
+  upDateCountItemFull,
+  addToCartSuccess,
+  addToCartError
 }
 
 @immutable
