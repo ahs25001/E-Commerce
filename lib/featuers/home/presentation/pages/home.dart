@@ -21,7 +21,6 @@ import 'package:e_commerce/featuers/home/presentation/widgets/product_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../bloc/home_bloc.dart';
@@ -72,13 +71,9 @@ class Home extends StatelessWidget {
             } else if (state.homeScreenStatus ==
                     HomeScreenStatus.getBrandsSuccessfully ||
                 state.homeScreenStatus ==
-                    HomeScreenStatus.getWishListSuccessfully ||
-                state.homeScreenStatus ==
                     HomeScreenStatus.getCategorySuccessfully ||
                 state.homeScreenStatus ==
-                    HomeScreenStatus.getSubCategorySuccessfully ||
-                state.homeScreenStatus ==
-                    HomeScreenStatus.getProductsSuccessfully) {
+                    HomeScreenStatus.getSubCategoryFromHomeSuccessfully) {
               Navigator.pop(context);
             } else if (state.homeScreenStatus ==
                     HomeScreenStatus.addToWishListSuccessfully ||
@@ -87,14 +82,10 @@ class Home extends StatelessWidget {
                 state.homeScreenStatus == HomeScreenStatus.addToCartSuccess) {
               Navigator.pop(context);
               HomeBloc.get(context).add(GetWishListEvent());
-              Fluttertoast.showToast(
-                  msg: state.massage ?? "Done",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.BOTTOM,
-                  backgroundColor: AppColors.blue,
-                  timeInSecForIosWeb: 3,
-                  textColor: Colors.white,
-                  fontSize: 13.0);
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(state.massage ?? "Done"),
+                backgroundColor: Colors.green,
+              ));
             } else if (state.homeScreenStatus ==
                     HomeScreenStatus.getBrandsError ||
                 state.homeScreenStatus == HomeScreenStatus.getWishListError ||
@@ -142,7 +133,9 @@ class Home extends StatelessWidget {
           builder: (context, state) {
             List<Widget> tabs = [
               HomeTab(state.categoryEntity, state.brandsEntity),
-              (state.products == null)
+              (state.products == null &&
+                      state.homeScreenStatus !=
+                              HomeScreenStatus.getProductsLoading )
                   ? CategoriesTab(
                       categories: state.categoryEntity ?? [],
                       selectedCategory: state

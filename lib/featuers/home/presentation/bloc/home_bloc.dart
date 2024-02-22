@@ -73,15 +73,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 failures: RemoteFailures(r.massage))));
       }
       if (event is SelectCategoryFromListEvent) {
-        emit(state.copyWith(homeScreenStatus: HomeScreenStatus.loading));
+        emit(state.copyWith(
+            selectedCategoryIndex: event.selectedIndex,
+            homeScreenStatus: HomeScreenStatus.getSubCategoryLoading));
         var response = await getSubCategoryUseCase
             .call(state.categoryEntity?[event.selectedIndex].id ?? "");
         response.fold(
-                (l) => emit(state.copyWith(
-                selectedCategoryIndex: event.selectedIndex,
+            (l) => emit(state.copyWith(
                 homeScreenStatus: HomeScreenStatus.getSubCategorySuccessfully,
                 subCategoryEntity: l)),
-                (r) => emit(state.copyWith(
+            (r) => emit(state.copyWith(
                 homeScreenStatus: HomeScreenStatus.getSubCategoryError,
                 failures: r)));
       }
@@ -93,14 +94,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emit(state.copyWith(
               tabIndex: event.tabIndex,
               selectedCategoryIndex: event.selectedIndex,
-              homeScreenStatus: HomeScreenStatus.getSubCategorySuccessfully,
+              homeScreenStatus:
+                  HomeScreenStatus.getSubCategoryFromHomeSuccessfully,
               subCategoryEntity: l));
         },
                 (r) => emit(state.copyWith(
                 homeScreenStatus: HomeScreenStatus.getSubCategoryError,
                 failures: r)));
       } else if (event is SelectSubCategoryEvent) {
-        emit(state.copyWith(homeScreenStatus: HomeScreenStatus.loading));
+        emit(state.copyWith(homeScreenStatus: HomeScreenStatus.getProductsLoading));
         var response = await getProductUseCase
             .call(state.subCategoryEntity?[event.selectedIndex ?? 0].id ?? "");
         response.fold(
@@ -114,7 +116,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(state.copyWith(homeScreenStatus: HomeScreenStatus.init));
       } else if (event is GetWishListEvent) {
         emit(state.copyWith(
-            homeScreenStatus: HomeScreenStatus.loading,
+            homeScreenStatus: HomeScreenStatus.getWishListLoading,
             products: state.products));
         var response = await getWishListUseCase.call();
         response.fold((l) {

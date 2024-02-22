@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce/featuers/home/presentation/pages/components/Category_item_list.dart';
 import 'package:e_commerce/featuers/home/presentation/pages/components/Sub_category_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
@@ -75,17 +76,40 @@ class CategoriesTab extends StatelessWidget {
                       SizedBox(
                         height: 20.h,
                       ),
-                      Expanded(
-                          child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2),
-                        itemBuilder: (context, index) => InkWell(
-                            onTap: () => HomeBloc.get(context)
-                                .add(SelectSubCategoryEvent(index)),
-                            child: SubCategoryItem(subCategoryEntities[index])),
-                        itemCount: subCategoryEntities.length,
-                      )),
+                      BlocConsumer<HomeBloc, HomeState>(
+                        listener: (context, state) {
+                          // TODO: implement listener
+                        },
+                        builder: (context, state) {
+                          return (state.homeScreenStatus ==
+                                  HomeScreenStatus.getSubCategoryLoading)
+                              ? Expanded(
+                                child: AlertDialog(
+                                    backgroundColor: Colors.transparent,
+                                    elevation: 0,
+                                    title: Center(
+                                      child:
+                                          LoadingAnimationWidget.fourRotatingDots(
+                                        color: AppColors.blue,
+                                        size: 80.sp,
+                                      ),
+                                    ),
+                                  ),
+                              )
+                              : Expanded(
+                                  child: GridView.builder(
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2),
+                                  itemBuilder: (context, index) => InkWell(
+                                      onTap: () => HomeBloc.get(context)
+                                          .add(SelectSubCategoryEvent(index)),
+                                      child: SubCategoryItem(
+                                          subCategoryEntities[index])),
+                                  itemCount: subCategoryEntities.length,
+                                ));
+                        },
+                      ),
                     ],
                   ),
                 )
